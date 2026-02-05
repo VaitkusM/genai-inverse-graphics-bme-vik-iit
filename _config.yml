@@ -1,7 +1,7 @@
 title: "Generatív AI és inverz módszerek a képszintézisben"
 description: "Budapesti Műszaki és Gazdaságtudományi Egyetem"
-baseurl: "/genai-inverse-graphics-bme-vik-iit"
-url: "https://vaitkusm.github.io"
+baseurl: ""
+url: ""
 
 markdown: kramdown
 highlighter: rouge

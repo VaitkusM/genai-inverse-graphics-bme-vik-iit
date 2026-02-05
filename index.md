@@ -12,6 +12,12 @@ title: Tematika
 **Oktató:** Dr. Vaitkus Márton
 **Email:** vaitkus@iit.bme.hu
 
+### Tantárgy leírása
+
+Napjainkban a generatív mesterséges intelligencia (artificial intelligence, AI) forradalmasítani készül a számítógépes grafika és animáció, valamint a digitális tartalomgyártás területét. A korszerű generatív technikákkal valósághű álló- vagy mozgóképek szintetizálása lehetséges akár szöveges leírás alapján. Hasonló módszerekkel a modellező programokban vagy grafikus motorokban közvetlenül felhasználható 3D modellek vagy komplett virtuális környezetek generálása is lehetségessé vált. A generatív módszerek ilyen rohamos fejlődését két fontos alaptechnológia tette lehetővé. Az egyik a mélytanulás, azaz a többrétegű neurális hálózatok alkalmazása a diffúziós és más generatív modellekben. A másik az inverz grafika, ami – megfordítva a grafikai képalkotás szokásos folyamatát – a kívánt képi látványból kiindulva szintetizálja a megjelenített 3D színtért elemeit. Mindkét technológia sikerében kulcsszerepet játszik a differenciális optimalizáció és annak megvalósítása párhuzamos (általában grafikus) hardveren. Az olyan kurrens módszerek, mint a "Neural Radiance Field" (NeRF), vagy a "3D Gaussian Splatting" (3DGS) tudományos alapkutatásból igen rövid időn belül gyakorlati technológiává léptek elő és fontos elemei a 3D generatív modellezésnek.
+
+A tárgy célja bevezetni a hallgatót a 2D és 3D generatív AI, valamint az inverz grafika világába. A neurális hálózatokhoz, mélytanuláshoz, optimalizációhoz és 3D geometriához kapcsolódó alapismeretek elsajátítása után a hallgató kompetenciákat szerezhet a diffúziós módszerekkel történő képszintézis, a generatív módszerek 3D grafikai alkalmazásai és a differenciálható renderelés területén. Az elméleti alapokon felül az ismertetett technikák gyakorlati implementációi és alkalmazásai is bemutatásra kerülnek.
+
 ---
 
 ## Alapozás
