@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} | {{ site.title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <script>
+    // Apply saved theme immediately to prevent flash
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="{{ '/' | relative_url }}" class="logo-link" aria-label="Főoldal">
+        <div class="logo-container">
+          <svg class="logo" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- Gradients -->
+              <linearGradient id="grad-purple-green" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7f5af0"/>
+                <stop offset="100%" stop-color="#2cb67d"/>
+              </linearGradient>
+              <linearGradient id="grad-cyan-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00b4d8"/>
+                <stop offset="100%" stop-color="#7f5af0"/>
+              </linearGradient>
+              <linearGradient id="grad-radial" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff6b6b"/>
+                <stop offset="50%" stop-color="#7f5af0"/>
+                <stop offset="100%" stop-color="#2cb67d"/>
+              </linearGradient>
+              <radialGradient id="splat-purple" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#7f5af0" stop-opacity="1"/>
+                <stop offset="70%" stop-color="#7f5af0" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#7f5af0" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="splat-green" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#2cb67d" stop-opacity="1"/>
+                <stop offset="70%" stop-color="#2cb67d" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#2cb67d" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="splat-cyan" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#00b4d8" stop-opacity="1"/>
+                <stop offset="70%" stop-color="#00b4d8" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#00b4d8" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="splat-pink" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#f472b6" stop-opacity="1"/>
+                <stop offset="70%" stop-color="#f472b6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#f472b6" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                <stop offset="30%" stop-color="#7f5af0" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#7f5af0" stop-opacity="0"/>
+              </radialGradient>
+              <!-- Filters -->
+              <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <filter id="glow-soft" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Background glow -->
+            <circle class="bg-glow" cx="30" cy="30" r="25" fill="url(#core-glow)" opacity="0.4"/>
+
+            <!-- Isometric 3D cube wireframe -->
+            <g class="cube" stroke-width="1" fill="none" opacity="0.6">
+              <!-- Back edges -->
+              <line class="cube-edge back" x1="30" y1="12" x2="44" y2="20" stroke="url(#grad-cyan-purple)" opacity="0.3"/>
+              <line class="cube-edge back" x1="30" y1="12" x2="16" y2="20" stroke="url(#grad-cyan-purple)" opacity="0.3"/>
+              <line class="cube-edge back" x1="44" y1="20" x2="44" y2="36" stroke="url(#grad-cyan-purple)" opacity="0.3"/>
+              <!-- Front edges -->
+              <line class="cube-edge" x1="16" y1="20" x2="30" y2="28" stroke="url(#grad-purple-green)" stroke-width="1.5"/>
+              <line class="cube-edge" x1="44" y1="20" x2="30" y2="28" stroke="url(#grad-purple-green)" stroke-width="1.5"/>
+              <line class="cube-edge" x1="16" y1="20" x2="16" y2="36" stroke="url(#grad-purple-green)" stroke-width="1.5"/>
+              <line class="cube-edge" x1="16" y1="36" x2="30" y2="44" stroke="url(#grad-purple-green)" stroke-width="1.5"/>
+              <line class="cube-edge" x1="44" y1="36" x2="30" y2="44" stroke="url(#grad-purple-green)" stroke-width="1.5"/>
+              <line class="cube-edge" x1="30" y1="28" x2="30" y2="44" stroke="url(#grad-cyan-purple)" stroke-width="1.5"/>
+            </g>
+
+            <!-- Camera rays (NeRF style) -->
+            <g class="rays" opacity="0.4">
+              <line class="ray r1" x1="2" y1="8" x2="24" y2="24" stroke="#7f5af0" stroke-width="0.75" stroke-dasharray="2 2"/>
+              <line class="ray r2" x1="2" y1="16" x2="22" y2="28" stroke="#2cb67d" stroke-width="0.75" stroke-dasharray="2 2"/>
+              <line class="ray r3" x1="2" y1="24" x2="20" y2="32" stroke="#00b4d8" stroke-width="0.75" stroke-dasharray="2 2"/>
+              <!-- Camera icon -->
+              <circle cx="4" cy="16" r="3" fill="none" stroke="url(#grad-purple-green)" stroke-width="1"/>
+              <circle cx="4" cy="16" r="1.5" fill="url(#grad-purple-green)"/>
+            </g>
+
+            <!-- 3D Gaussian Splats -->
+            <g class="splats">
+              <ellipse class="splat s1" cx="26" cy="22" rx="6" ry="5" fill="url(#splat-purple)" filter="url(#glow-soft)"/>
+              <ellipse class="splat s2" cx="36" cy="28" rx="5" ry="6" fill="url(#splat-green)" filter="url(#glow-soft)"/>
+              <ellipse class="splat s3" cx="28" cy="36" rx="7" ry="5" fill="url(#splat-cyan)" filter="url(#glow-soft)"/>
+              <ellipse class="splat s4" cx="22" cy="30" rx="4" ry="5" fill="url(#splat-pink)" filter="url(#glow-soft)"/>
+            </g>
+
+            <!-- Diffusion particles (noise to signal) -->
+            <g class="diffusion-particles">
+              <circle class="dp dp1" cx="48" cy="12" r="1.5" fill="#7f5af0"/>
+              <circle class="dp dp2" cx="52" cy="18" r="1" fill="#2cb67d"/>
+              <circle class="dp dp3" cx="50" cy="25" r="1.2" fill="#00b4d8"/>
+              <circle class="dp dp4" cx="54" cy="32" r="0.8" fill="#f472b6"/>
+              <circle class="dp dp5" cx="48" cy="38" r="1.3" fill="#7f5af0"/>
+              <circle class="dp dp6" cx="52" cy="44" r="1" fill="#2cb67d"/>
+              <circle class="dp dp7" cx="8" cy="42" r="1.2" fill="#00b4d8"/>
+              <circle class="dp dp8" cx="12" cy="48" r="0.9" fill="#f472b6"/>
+              <circle class="dp dp9" cx="46" cy="50" r="1.1" fill="#7f5af0"/>
+            </g>
+
+            <!-- Central neural core -->
+            <circle class="core-outer" cx="30" cy="30" r="6" fill="url(#grad-purple-green)" filter="url(#glow-strong)" opacity="0.8"/>
+            <circle class="core-inner" cx="30" cy="30" r="3" fill="white" opacity="0.9"/>
+
+            <!-- Neural connections from core -->
+            <g class="neural-links" stroke-width="0.5" opacity="0.5">
+              <line class="nlink" x1="30" y1="30" x2="26" y2="22" stroke="url(#grad-purple-green)"/>
+              <line class="nlink" x1="30" y1="30" x2="36" y2="28" stroke="url(#grad-cyan-purple)"/>
+              <line class="nlink" x1="30" y1="30" x2="28" y2="36" stroke="url(#grad-purple-green)"/>
+              <line class="nlink" x1="30" y1="30" x2="22" y2="30" stroke="url(#grad-cyan-purple)"/>
+            </g>
+
+            <!-- Orbit ring -->
+            <ellipse class="orbit" cx="30" cy="30" rx="20" ry="8" fill="none" stroke="url(#grad-radial)" stroke-width="0.5" stroke-dasharray="3 2" opacity="0.4" transform="rotate(-20 30 30)"/>
+          </svg>
+        </div>
+        <div class="logo-text-container">
+          <span class="logo-text-main">GenAI</span>
+          <span class="logo-text-sub">Inverz Grafika</span>
+        </div>
+      </a>
+      <a href="{{ '/' | relative_url }}">Tematika</a>
+      <a href="{{ '/eloadasok' | relative_url }}">Előadások</a>
+      <a href="{{ '/hazi1' | relative_url }}">1. Házi</a>
+      <a href="{{ '/hazi2' | relative_url }}">2. Házi</a>
+      <a href="{{ '/projekt' | relative_url }}">Önálló feladat</a>
+      <button class="theme-toggle" aria-label="Téma váltása" title="Téma váltása">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    {% if page.url == "/" %}
+    <header class="site-header">
+      <h1 class="site-title">{{ site.title }}</h1>
+      <p class="site-affiliation">BME-VIK IIT</p>
+    </header>
+    {{ content }}
+    {% else %}
+    <h1>{{ page.title }}</h1>
+    {{ content }}
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>{{ site.title }}</p>
+    <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">{{ site.description }}</p>
+  </footer>
+
+  <script>
+    const toggle = document.querySelector('.theme-toggle');
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    }
+
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme')) {
+        document.documentElement.setAttribute('data-theme', e.matches ? 'light' : 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

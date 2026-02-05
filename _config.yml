@@ -1,0 +1,12 @@
+title: "Generatív AI és inverz módszerek a képszintézisben"
+description: "Budapesti Műszaki és Gazdaságtudományi Egyetem"
+baseurl: ""
+url: ""
+
+markdown: kramdown
+highlighter: rouge
+
+exclude:
+  - README.md
+  - CLAUDE.md
+  - syllabus.md
