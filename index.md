@@ -7,12 +7,14 @@ title: Tematika
 
 # Kurzus információk
 
-**Oktató:** Dr. Vaitkus Márton
-**Email:** vaitkus@iit.bme.hu
-**Tárgykód:** [VIIIBXAV059-00](https://portal.vik.bme.hu/kepzes/targyak/VIIIBXAV059-00/)
-**Kreditszám:** 4
-**Előadások tervezett időpontja:** Hétfő/Szerda 12-14
-**Követelmények:** Aláírás feltétele 2 db rövid, egyszerű házi feladat elkészítése (Python nyelven, Juypter notebookban). A szóbeli vizsga kiváltható szabadon választott önálló feladattal (félév végi kiselőadás megtartásával).
+| | |
+|---|---|
+| **Oktató** | Dr. Vaitkus Márton |
+| **Email** | vaitkus@iit.bme.hu |
+| **Tárgykód** | [VIIIBXAV059-00](https://portal.vik.bme.hu/kepzes/targyak/VIIIBXAV059-00/) |
+| **Kreditszám** | 4 |
+| **Előadások** | Hétfő/Szerda 12-14 |
+| **Követelmények** | Aláírás feltétele 2 db rövid, egyszerű házi feladat elkészítése (Python nyelven, Juypter notebookban). A szóbeli vizsga kiváltható szabadon választott önálló feladattal (félév végi kiselőadás megtartásával). |
 
 ## Tantárgy leírása
 
