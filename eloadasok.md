@@ -10,10 +10,15 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ---
 
-### 1. Bevezetés {#het-1}
+### 1/1. Bevezetés 1 - Generatív AI {#het-1}
 
 - [Diák (PDF)](GenAI_2026_E01a_Intro1.pdf)
-- [Kiegészítő anyag](#)
+
+---
+
+### 1/2. Bevezetés 2. - Inverz Grafika {#het-1}
+
+- [Diák (PDF)](#)
 
 ---
 
