@@ -12,7 +12,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 1. Bevezetés {#het-1}
 
-- [Diák (PDF)](#)
+- [Diák (PDF)](GenAI_2026_E01a_Intro1.pdf)
 - [Kiegészítő anyag](#)
 
 ---
