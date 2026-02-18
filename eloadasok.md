@@ -18,7 +18,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 1/2. Bevezetés 2. - Inverz Grafika {#het-1}
 
-- [Diák (PDF)](#)
+- [Diák (PDF)](GenAI_2026_E01b_Intro2.pdf)
 
 ---
 
