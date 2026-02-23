@@ -24,7 +24,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 2. Optimalizáció és automatikus differenciálás {#het-2}
 
-- [Diák (PDF)](#)
+- [Diák (PDF)](GenAI_2026_E02_Optimization.pdf)
 - [Kiegészítő anyag](#)
 
 ---
