@@ -31,7 +31,9 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 3. Mélytanulás alapjai {#het-3}
 
-- [Diák (PDF)](#)
+- [Diák (PDF)](GenAI_2026_E03_NeuralNetworks.pdf)
+- Ajánlott olvasmány: [Dive into Deep Learning](https://d2l.ai/)
+- Ajánlott olvasmány: [Understanding Deep Learning](https://udlbook.github.io/udlbook/)
 - [Kiegészítő anyag](#)
 
 ---
