@@ -41,7 +41,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 ### 4. Automatikus differenciálás és mélytanulás a gyakorlatban {#het-4}
 
 - [Diák (PDF)](#)
-- [Jupyter notebook](#)
+- [Jupyter notebook (1. rész)](E04_PyTorch-1_Alapok.ipynb)
 
 ---
 
