@@ -42,6 +42,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 - [Diák (PDF)](#)
 - [Jupyter notebook (1. rész)](E04_PyTorch-1_Alapok.ipynb)
+- [Jupyter notebook (2. rész)](E04_PyTorch-2_NN.ipynb)
 
 ---
 
