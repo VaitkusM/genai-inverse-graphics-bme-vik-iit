@@ -782,6 +782,14 @@ main > * {
   animation: fadeIn 0.5s ease forwards;
 }
 
+/* Disabled / coming-soon links */
+.disabled-link {
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
 /* Emphasis styling */
 em {
   color: var(--accent-2);

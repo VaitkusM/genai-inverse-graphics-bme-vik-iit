@@ -34,13 +34,12 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 - [Diák (PDF)](GenAI_2026_E03_NeuralNetworks.pdf)
 - Ajánlott olvasmány: [Dive into Deep Learning](https://d2l.ai/)
 - Ajánlott olvasmány: [Understanding Deep Learning](https://udlbook.github.io/udlbook/)
-- [Kiegészítő anyag](#)
+- <span class="disabled-link">Kiegészítő anyag</span>
 
 ---
 
 ### 4. Automatikus differenciálás és mélytanulás a gyakorlatban {#het-4}
 
-- [Diák (PDF)](#)
 - [Jupyter notebook (1. rész)](E04_PyTorch-1_Alapok.ipynb)
 - [Jupyter notebook (2. rész)](E04_PyTorch-2_NN.ipynb)
 
@@ -48,105 +47,105 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 5. Matematikai alapok {#het-5}
 
-- [Diák (PDF)](#)
+- [Diák (PDF)](GenAI_2026_E05_MathBasics.pdf)
 
 ---
 
 ### 6. Generatív módszerek alapjai {#het-6}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 7. Autoregresszív modellek {#het-7}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 8. Diffúziós modellek {#het-8}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 9. Folyamillesztés {#het-9}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 10. Vezérelt generálás {#het-10}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 11. Diffúziós képszintézis a gyakorlatban {#het-11}
 
-- [Diák (PDF)](#)
-- [1. Házi feladat](#)
+- <span class="disabled-link">Diák (PDF)</span>
+- <span class="disabled-link">1. Házi feladat</span>
 
 ---
 
 ### 12. Haladó diffúziós képszintézis {#het-12}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 13. Videógenerálás {#het-13}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 14. 3D generatív modellezés alapjai {#het-14}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 15. Neurális implicit reprezentációk {#het-15}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 16. Inverz grafika alapjai {#het-16}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 17. Inverz grafika alkalmazásai {#het-17}
 
-- [Diák (PDF)](#)
-- [2. Házi feladat](#)
+- <span class="disabled-link">Diák (PDF)</span>
+- <span class="disabled-link">2. Házi feladat</span>
 
 ---
 
 ### 18. Neurális Radiancia Mezők (NeRF) {#het-18}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 19. 3D Gaussian Splatting (3DGS) {#het-19}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 20. NeRF / 3DGS a gyakorlatban {#het-20}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
 ### 21. Inverz grafika generatív alkalmazásai {#het-21}
 
-- [Diák (PDF)](#)
+- <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
