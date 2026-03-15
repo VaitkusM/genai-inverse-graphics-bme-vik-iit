@@ -53,7 +53,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 6. Generatív módszerek alapjai {#het-6}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E06_GenerativeBasics.pdf)
 
 ---
 
