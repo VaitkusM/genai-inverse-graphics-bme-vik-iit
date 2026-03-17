@@ -57,19 +57,19 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ---
 
-### 7. Autoregresszív modellek {#het-7}
+### 7. Diffúziós modellek {#het-7}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 8. Diffúziós modellek {#het-8}
+### 8. Folyamillesztés {#het-8}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 9. Folyamillesztés {#het-9}
+### 9. Autoregresszív modellek {#het-9}
 
 - <span class="disabled-link">Diák (PDF)</span>
 

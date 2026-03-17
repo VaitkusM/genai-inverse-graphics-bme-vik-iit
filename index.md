@@ -50,14 +50,14 @@ Valószínűségszámítási és lineáris algebrai előismeretek átismétlése
 ### Generatív módszerek alapjai
 Diszkriminatív és generatív tanulás. Explicit és implicit generatív módszerek. Generált eloszlások minősítése: IS, FID. Látens tér fogalma. PCA. Autoenkóderek, VAE. GAN. Feltételes generálás.
 
-### Autoregresszív modellek
-RNN. Transformer architektúra, figyelemmechanizmus. Vision Transformer. Képgenerálás pixel/látens térben. Kép tokenizálása, VQVAE/GAN.
-
 ### Diffúziós modellek
 A zajcsökkentő autoenkóderektől a diffúziós modellekig. DDPM, DDIM, EDM. Score matching. Zaj ütemezési és mintavételezési technikák. Megvalósítás U-Net és Transformer architektúrákkal. Látens diffúzió.
 
 ### Folyamillesztés
 Valószínűségi folyamok, folyamillesztés (flow matching). Kapcsolat a diffúzióval és egyéb módszerekkel. Integrálási módszerek. Rektifikáció. Sztochasztikus interpolánsok, folyamok általános eloszlások között, összerendelési módszerek.
+
+### Autoregresszív modellek
+RNN. Transformer architektúra, figyelemmechanizmus. Vision Transformer. Képgenerálás pixel/látens térben. Kép tokenizálása, VQVAE/GAN.
 
 ### Vezérelt generálás
 Multimodalitás, CLIP beágyazás. Vezérelt diffúziós és folyam-alapú módszerek, classifier-free-guidance. ControlNet. Finomhangolási módszerek: DreamBooth, LoRA. Szöveges inverzió.
