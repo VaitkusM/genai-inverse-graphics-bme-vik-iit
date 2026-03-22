@@ -59,7 +59,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 7. Diffúziós modellek {#het-7}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E07_DiffusionBasics.pdf)
 
 ---
 
