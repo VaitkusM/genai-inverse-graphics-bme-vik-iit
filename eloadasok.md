@@ -63,9 +63,9 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ---
 
-### 8. Folyamillesztés {#het-8}
+### 8. Transformers {#het-8}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E08_Transformers.pdf)
 
 ---
 
