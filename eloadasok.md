@@ -84,7 +84,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 ### 11. Diffúziós képszintézis a gyakorlatban {#het-11}
 
 - <span class="disabled-link">Diák (PDF)</span>
-- <span class="disabled-link">1. Házi feladat</span>
+- [1. Házi feladat](HF1.ipynb)
 
 ---
 
