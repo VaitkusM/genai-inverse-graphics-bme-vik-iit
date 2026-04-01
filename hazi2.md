@@ -12,7 +12,7 @@ permalink: /hazi2/
 
 ### Leírás
 
-A feladat leírása a kurzus hallgatói számára elérhető.
+A feladat leírása hamarosan elérhető lesz.
 
 ---
 
@@ -24,4 +24,4 @@ TBD
 
 ### Beadás
 
-A beadás módja a kurzus hallgatói számára elérhető.
+A beadás módja hamarosan elérhető lesz.
