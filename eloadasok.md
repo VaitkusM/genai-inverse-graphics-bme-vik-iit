@@ -69,81 +69,75 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ---
 
-### 9. Autoregresszív modellek {#het-9}
+### 9. Vezérelt generálás {#het-9}
 
-- <span class="disabled-link">Diák (PDF)</span>
-
----
-
-### 10. Vezérelt generálás {#het-10}
-
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E09_Guidance.pdf)
 
 ---
 
-### 11. Diffúziós képszintézis a gyakorlatban {#het-11}
+### 10. Diffúziós képszintézis a gyakorlatban {#het-10}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E10_DiffusionPractice.pdf)
 - [1. Házi feladat](HF1.ipynb)
 
 ---
 
-### 12. Haladó diffúziós képszintézis {#het-12}
+### 11. Haladó diffúziós képszintézis {#het-11}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 13. Videógenerálás {#het-13}
+### 12. Videógenerálás {#het-12}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 14. 3D generatív modellezés alapjai {#het-14}
+### 13. 3D generatív modellezés alapjai {#het-13}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 15. Neurális implicit reprezentációk {#het-15}
+### 14. Neurális implicit reprezentációk {#het-14}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 16. Inverz grafika alapjai {#het-16}
+### 15. Inverz grafika alapjai {#het-15}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 17. Inverz grafika alkalmazásai {#het-17}
+### 16. Inverz grafika alkalmazásai {#het-16}
 
 - <span class="disabled-link">Diák (PDF)</span>
 - <span class="disabled-link">2. Házi feladat</span>
 
 ---
 
-### 18. Neurális Radiancia Mezők (NeRF) {#het-18}
+### 17. Neurális Radiancia Mezők (NeRF) {#het-17}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 19. 3D Gaussian Splatting (3DGS) {#het-19}
+### 18. 3D Gaussian Splatting (3DGS) {#het-18}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 20. NeRF / 3DGS a gyakorlatban {#het-20}
+### 19. NeRF / 3DGS a gyakorlatban {#het-19}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 21. Inverz grafika generatív alkalmazásai {#het-21}
+### 20. Inverz grafika generatív alkalmazásai {#het-20}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
