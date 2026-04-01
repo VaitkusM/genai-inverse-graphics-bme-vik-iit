@@ -14,10 +14,10 @@ Ebben a házi feladatban egy **flow matching** alapú generatív modellt fogsz i
 
 **A feladat részei:**
 
-1. **2D toy example** - Egyszerű 2D adathalmazon (two moons) tanított flow matching modell
+1. **2D toy example** - Egyszerű 2D adathalmazon (two moons) tanított DDPM/DDIM (opcionális) és flow matching modellek
 2. **Unconditional MNIST generálás** - Kézzel írt számjegyek generálása U-Net architektúrával
 3. **Conditional generálás** - Megadott osztályú (0-9) számjegyek generálása
-4. **Classifier-Free Guidance (CFG)** - A generálás minőségének javítása guidance technikával
+4. **Classifier-Free Guidance (CFG) (opcionális)** - A generálás minőségének javítása guidance technikával
 
 ---
 
@@ -43,11 +43,10 @@ A notebook futtatható:
 
 ### Határidő
 
-TBD
+2026.04.20.
 
 ---
 
 ### Beadás
 
-- Kitöltött notebook (`.ipynb`) feltöltése
-- Rövid összefoglaló a tapasztalatokról (max 1 oldal, PDF)
+- Kitöltött notebook (`.ipynb`) feltöltése (Moodle).
