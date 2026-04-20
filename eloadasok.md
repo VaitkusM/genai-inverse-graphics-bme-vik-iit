@@ -84,11 +84,11 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 11. Haladó diffúziós képszintézis {#het-11}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E11_AdvancedDiffusion.pdf)
 
 ---
 
-### 12. Videógenerálás {#het-12}
+### 12. 3D Geometriai Alapok {#het-12}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
