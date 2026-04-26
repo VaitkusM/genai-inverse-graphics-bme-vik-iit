@@ -94,15 +94,15 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ---
 
-### 13. 3D generatív modellezés alapjai {#het-13}
+### 13. 3D Mélytanulás {#het-13}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E13_3DDeepLearning.pdf)
 
 ---
 
 ### 14. Neurális implicit reprezentációk {#het-14}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E14_NeuralImplicits.pdf)
 
 ---
 
