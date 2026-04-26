@@ -90,7 +90,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 12. 3D Geometriai Alapok {#het-12}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E12_3DGeometry.pdf)
 
 ---
 
