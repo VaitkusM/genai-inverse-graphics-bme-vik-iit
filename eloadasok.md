@@ -94,7 +94,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ---
 
-### 13. 3D Mélytanulás {#het-13}
+### 13. 3D Mélytanulás (opcionális, saját feldolgozásra) {#het-13}
 
 - [Diák (PDF)](GenAI_2026_E13_3DDeepLearning.pdf)
 
