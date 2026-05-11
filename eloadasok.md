@@ -108,36 +108,30 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 15. Inverz grafika alapjai {#het-15}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E15_InverseRenderingBasics.pdf)
 
 ---
 
-### 16. Inverz grafika alkalmazásai {#het-16}
+### 16. Neurális Radiancia Mezők (NeRF) {#het-16}
 
-- <span class="disabled-link">Diák (PDF)</span>
-- <span class="disabled-link">2. Házi feladat</span>
-
----
-
-### 17. Neurális Radiancia Mezők (NeRF) {#het-17}
-
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E16_RadianceFields.pdf)
+- [2. Házi feladat](HF2.ipynb)
 
 ---
 
-### 18. 3D Gaussian Splatting (3DGS) {#het-18}
+### 17. 3D Gaussian Splatting (3DGS) {#het-17}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E17_GaussianSplatting.pdf)
 
 ---
 
-### 19. NeRF / 3DGS a gyakorlatban {#het-19}
+### 18. NeRF / 3DGS a gyakorlatban {#het-18}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
 ---
 
-### 20. Inverz grafika generatív alkalmazásai {#het-20}
+### 19. Inverz grafika generatív alkalmazásai {#het-19}
 
 - <span class="disabled-link">Diák (PDF)</span>
 
