@@ -12,16 +12,16 @@ permalink: /hazi2/
 
 Ebben a házi feladatban egy egyszerű **NeRF-szerű** rendszert fogsz építeni
 PyTorch-ban, amely **többnézetes képekből** rekonstruál egy 3D térben élő
-sugárzási mezőt (radiance field). A munka a `torch` és `numpy` alapokat
-használja; az opcionális utolsó részben a saját megoldásunkat összehasonlítjuk
-a `pytorch3d` beépített volumetrikus renderelőjével.
+sugárzási mezőt (radiance field). A munka teljes egészében saját implementáció
+— csak a `torch` és `numpy` alapokat használjuk, semmilyen renderelő-könyvtár
+nem szükséges.
 
 **A feladat részei:**
 
 1. **Volumetrikus renderelés egyetlen sugárra** — a vol-rendering integrál diszkretizálása, transzparencia, alpha-kompozíció.
 2. **Procedurális hangulatjel illesztése voxel-ráccsal** — explicit 3D rács illesztése előállított képekre, differenciálható renderelés gyakorlatban.
 3. **Tiny-NeRF** — a voxel-rácsot egy kis MLP + pozicionális kódolás váltja fel; novel-view szintézis.
-4. **(Opcionális) Összehasonlítás PyTorch3D-vel** — ugyanaz a jelenet a PyTorch3D `ImplicitRenderer`-ével.
+4. **(Opcionális) Explicit reprezentáció: Gauss point cloud** — ugyanaz a jelenet izotróp 3D Gauss-csúcsok halmazával (mini 3DGS), ugyanazzal a renderelővel.
 
 ---
 
@@ -42,7 +42,7 @@ A notebook futtatható:
 - A notebook `# TODO` kommentekkel jelölt részeinek implementálása (összesen 6 db, mind néhány soros)
 - A renderelt és az analitikus képek konvergenciája Part 2 és Part 3 végére
 - Generált képek vizualizálása és értékelése
-- A 4. (PyTorch3D) rész opcionális
+- A 4. (Gauss-splat) rész opcionális
 
 ---
 
