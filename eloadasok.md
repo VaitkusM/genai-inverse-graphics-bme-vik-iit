@@ -127,7 +127,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 18. NeRF / 3DGS a gyakorlatban {#het-18}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E18_PracticalRadianceFields.pdf)
 
 ---
 
