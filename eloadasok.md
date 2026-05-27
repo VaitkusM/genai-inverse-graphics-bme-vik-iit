@@ -133,7 +133,7 @@ Az előadások diái és kiegészítő anyagok itt lesznek elérhetők.
 
 ### 19. Inverz grafika generatív alkalmazásai {#het-19}
 
-- <span class="disabled-link">Diák (PDF)</span>
+- [Diák (PDF)](GenAI_2026_E19_GenerativeRadianceFields.pdf)
 
 ---
 
