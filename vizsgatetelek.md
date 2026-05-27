@@ -1,15 +1,15 @@
 ---
 layout: default
-title: Tételsor
-permalink: /tetelsor/
+title: Vizsgatételek
+permalink: /vizsgatetelek/
 ---
 
-## Tételsor
+## Vizsgatételek
 
 1. Optimalizációs feladat fogalma, fajtái. Gradiens módszer, stochasztikus gradiens, momentum, ADAM. Automatikus differenciálás, forward és reverse mód.
 2. Neurális hálózat fogalma, aktivációs függvény, lineáris és nemlineáris hálózatok. Multi-Layer Perceptron (MLP). Tanítás, backpropagation algoritmus, batching. Konvolúciós neurális hálók. Reziduális hálók. U-Net architektúra.
 3. Diszkriminatív és generatív tanulás. Explicit és implicit generatív módszerek. Generált eloszlások minősítése: IS, FID. Látens tér fogalma. PCA. Autoenkóderek. Variációs autóenkóder definíciója (levezetés nélkül), tanítása.
-4. Zajcsökkentő atóenkóder, score-függvény. Diffúziós generatív modellek. Folyam-alapú modellek (flow matching).
+4. Zajcsökkentő autóenkóder, score-függvény. Diffúziós generatív modellek. Folyam-alapú modellek (flow matching).
 5. Diffúziós modellek architektúrái (U-Net, DiT). Mintavételezési módszerek: DDPM vs DDIM (képletek nélkül). ODE-alapú mintavételezés. Látens diffúzió.
 6. Transformer architektúra. Token-hálók, figyelem (attention). Transformer rétegek. Dekóder, enkóder, enkóder-dekóder architektúrák. Normalizáció, pozícionális kódolás.
 7. Vezérelt diffúziós generálás. CLIP beágyazás. Classifier és classifier-free guidance (CFG), CFG hatása és jelentősége a képgenerálás gyakorlatában. Finomhangolás adapterekkel: LoRA, ControlNet. DreamBooth, szöveges inverzió alapötlete.
