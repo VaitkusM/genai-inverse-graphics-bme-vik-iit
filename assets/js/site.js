@@ -46,7 +46,7 @@
   var rail = document.querySelector('.rail');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  var FX = 0.85, FY = 1.1, PXS = 0.02;                 // image frame half-extents, pixel size
+  var FX = 0.85, FY = 1.1, PXS = 0.01;                 // image frame half-extents, pixel size
   var IW = Math.round(2 * FX / PXS), IH = Math.round(2 * FY / PXS);
   var CAM = 4.2, LIGHT = [-0.42, 0.58, 0.7], FILL = [0.72, -0.2, 0.66];
 
@@ -78,7 +78,8 @@
   }
   function sm(a, b, k) { var h = k - Math.abs(a - b); if (h < 0) h = 0; h /= k; return (a < b ? a : b) - h * h * k * 0.25; }
 
-  var TAIL = [[0.26, -0.82, -0.22], [0.8, -0.99, -0.28], [0.88, -0.2, -0.16], [0.62, 0.14, -0.04]];
+  /* The tail lies on the ground, curled round the right side to the front paws. */
+  var TAIL = [[0.1, -0.9, -0.5], [0.8, -0.94, -0.52], [0.82, -0.945, 0.58], [0.2, -0.95, 0.6]];
   var TX = [], TY = [], TZ = [], TR = [];
   function tailAt(s) {
     var q = 1 - s, c = [0, 0, 0];
@@ -89,32 +90,61 @@
   }
   for (var ti = 0; ti <= 10; ti++) {
     var tc = tailAt(ti / 10);
-    TX.push(tc[0]); TY.push(tc[1]); TZ.push(tc[2]); TR.push(0.088 * (1 - 0.42 * ti / 10));
+    TX.push(tc[0]); TY.push(tc[1]); TZ.push(tc[2]); TR.push(0.066 * (1 - 0.42 * ti / 10));
+  }
+  var tlD = 9, tlT = 0;
+  function tailNear(x, y, z) {               // distance to the tail's surface, and where along it
+    tlD = 9;
+    for (var i = 0; i < 10; i++) {
+      var bx = TX[i + 1] - TX[i], by = TY[i + 1] - TY[i], bz = TZ[i + 1] - TZ[i], px = x - TX[i], py = y - TY[i], pz = z - TZ[i];
+      var h = (px * bx + py * by + pz * bz) / (bx * bx + by * by + bz * bz);
+      h = h < 0 ? 0 : h > 1 ? 1 : h;
+      px -= bx * h; py -= by * h; pz -= bz * h;
+      var d = Math.sqrt(px * px + py * py + pz * pz) - (TR[i] + (TR[i + 1] - TR[i]) * h);
+      if (d < tlD) { tlD = d; tlT = i + h; }
+    }
+  }
+
+  var HS = 1.13, HPY = 0.36, HPZ = 0.12;      // the head is modelled at unit size, then scaled about the top of the neck
+  function headD(x, y, z) {
+    var q = x < 0 ? -x : x;
+    var h = sE(x, y, z, 0, 0.475, 0.16, 0.205, 0.18, 0.2, 0.18);             // skull
+    h = sm(h, sE(q, y, z, 0.105, 0.41, 0.23, 0.11, 0.085, 0.1, 0.085), 0.06);       // cheeks
+    h = sm(h, sC(x, y, z, 0, 0.52, 0.32, 0, 0.44, 0.39, 0.04, 0.03), 0.04);  // bridge of the nose
+    h = sm(h, sE(x, y, z, 0, 0.405, 0.335, 0.075, 0.05, 0.065, 0.05), 0.05); // muzzle
+    h = sm(h, sE(q, y, z, 0.035, 0.395, 0.365, 0.045, 0.036, 0.04, 0.036), 0.025);  // whisker pads
+    h = sm(h, sE(x, y, z, 0, 0.356, 0.325, 0.045, 0.03, 0.04, 0.03), 0.03);  // chin
+    // ears: thin cones, hollowed from the front
+    var zz = (z - 0.11) * 2.1;
+    var e = sC(q, y, zz, 0.13, 0.58, 0, 0.2, 0.8, -0.05, 0.12, 0.016);
+    var c = sC(q, y, zz - 0.1, 0.135, 0.615, 0, 0.196, 0.755, -0.05, 0.088, 0.004);
+    e = -sm(-e, c, 0.025) * 0.47;
+    h = sm(h, e, 0.03);
+    return h;
   }
 
   function sdf(x, y, z) {
     var q = x < 0 ? -x : x;                                                    // left/right symmetry
-    var d = sE(x, y, z, 0, -0.4, -0.05, 0.38, 0.5, 0.34, 0.34);                // torso
-    d = sm(d, sE(x, y, z, 0, -0.66, -0.02, 0.44, 0.33, 0.38, 0.33), 0.1);      // hips
-    d = sm(d, sE(x, y, z, 0, -0.18, 0.1, 0.27, 0.33, 0.22, 0.22), 0.1);        // chest
-    d = sm(d, sE(q, y, z, 0.3, -0.7, -0.04, 0.22, 0.28, 0.3, 0.22), 0.08);     // haunches
-    d = sm(d, sC(q, y, z, 0.14, -0.28, 0.2, 0.16, -0.9, 0.29, 0.115, 0.085), 0.06);   // forelegs
-    d = sm(d, sE(q, y, z, 0.165, -0.93, 0.36, 0.105, 0.07, 0.14, 0.07), 0.04); // paws
-    var h = sE(x, y, z, 0, 0.36, 0.08, 0.39, 0.32, 0.32, 0.32);                // head
-    h = sm(h, sE(q, y, z, 0.19, 0.27, 0.2, 0.17, 0.15, 0.16, 0.15), 0.08);     // cheeks
-    h = sm(h, sE(x, y, z, 0, 0.25, 0.34, 0.13, 0.09, 0.1, 0.09), 0.06);        // muzzle
-    h = sm(h, sC(q, y, z, 0.23, 0.55, 0.04, 0.32, 0.87, -0.01, 0.16, 0.025), 0.05);   // ears
-    d = sm(d, h, 0.09);
-    if (x > 0.05) {
+    var d = sE(x, y, z, 0, -0.68, -0.2, 0.34, 0.32, 0.36, 0.32);                // rump
+    d = sm(d, sC(x, y, z, 0, -0.55, -0.16, 0, 0.05, 0.03, 0.31, 0.215), 0.1);   // back and ribcage, leaning forward
+    d = sm(d, sE(x, y, z, 0, -0.1, 0.14, 0.19, 0.25, 0.14, 0.14), 0.09);        // breast
+    d = sm(d, sE(q, y, z, 0.19, -0.03, 0.07, 0.115, 0.22, 0.15, 0.115), 0.1);   // shoulders
+    d = sm(d, sC(x, y, z, 0, 0.1, 0.04, 0, 0.36, 0.12, 0.2, 0.165), 0.09);      // neck
+    d = sm(d, sE(q, y, z, 0.25, -0.7, -0.06, 0.18, 0.28, 0.3, 0.18), 0.08);     // thighs
+    d = sm(d, sE(q, y, z, 0.3, -0.957, 0.2, 0.062, 0.043, 0.13, 0.043), 0.04);  // hind paws
+    d = sm(d, sC(q, y, z, 0.13, -0.1, 0.2, 0.122, -0.9, 0.3, 0.092, 0.06), 0.05);    // forelegs
+    d = sm(d, sE(q, y, z, 0.124, -0.955, 0.37, 0.07, 0.046, 0.1, 0.046), 0.035);    // fore paws
+    if (y > 0.2) d = sm(d, headD(x / HS, HPY + (y - HPY) / HS, HPZ + (z - HPZ) / HS) * HS, 0.06);
+    if (y < -0.78 && x > -0.1) {
       for (var i = 0; i < 10; i++) {
-        d = sm(d, sC(x, y, z, TX[i], TY[i], TZ[i], TX[i + 1], TY[i + 1], TZ[i + 1], TR[i], TR[i + 1]), i ? 0.02 : 0.07);
+        d = sm(d, sC(x, y, z, TX[i], TY[i], TZ[i], TX[i + 1], TY[i + 1], TZ[i + 1], TR[i], TR[i + 1]), i ? 0.02 : 0.06);
       }
     }
     return d;
   }
   var gnx = 0, gny = 0, gnz = 1;
   function grad(x, y, z) {
-    var e = 0.004;
+    var e = 0.003;
     gnx = sdf(x + e, y, z) - sdf(x - e, y, z);
     gny = sdf(x, y + e, z) - sdf(x, y - e, z);
     gnz = sdf(x, y, z + e) - sdf(x, y, z - e);
@@ -122,24 +152,74 @@
     gnx /= l; gny /= l; gnz /= l;
   }
 
-  /* Surface look: hue along the ramp (0..1), a tone, and a kind (1 fur, 2 iris, 3 pupil/nose). */
-  var pHue = 0, pTone = 1, pKind = 1;
-  function paint(x, y, z, nx, ny, nz) {
-    var ax = x < 0 ? -x : x, ex = (ax - 0.155) / 0.07, ey = (y - 0.385) / 0.082;
-    if (z > 0.24 && ex * ex + ey * ey < 1) {
-      pKind = (Math.abs(ax - 0.155) < 0.02 && Math.abs(y - 0.385) < 0.066) ? 3 : 2;
-      pHue = 1; pTone = 1; return;
-    }
-    if (z > 0.39 && ax < 0.04 && Math.abs(y - 0.287) < 0.028) { pKind = 3; pHue = 1; pTone = 1; return; }
-    pKind = 1;
-    pHue = Math.min(1, Math.max(0, (1 - y) / 1.95)) * 0.5;                     // violet ears -> teal feet
-    var ao = sdf(x + nx * 0.1, y + ny * 0.1, z + nz * 0.1) / 0.1;
-    pTone = 0.5 + 0.5 * (ao < 0 ? 0 : ao > 1 ? 1 : ao);
-    var front = ramp01(0.02, 0.24, z) * ramp01(0.34, 0.08, ax) * ramp01(0.36, 0.24, y) * ramp01(-0.9, -0.62, y);
-    pHue += 0.13 * front; pTone *= 1 + 0.2 * front;                           // pale chest and muzzle
-    pTone *= 1 - 0.34 * ramp01(0.6, 0.68, y) * ramp01(0.4, 0.62, nz) * ramp01(0.12, 0.19, ax);                                    // inside of the ears
+  function hash3(i, j, k) {
+    var n = Math.imul(i, 374761393) ^ Math.imul(j, 668265263) ^ Math.imul(k, 1440662683);
+    n = Math.imul(n ^ (n >>> 13), 1274126177);
+    return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+  }
+  function noise3(x, y, z) {                  // smooth value noise, 0..1
+    var i = Math.floor(x), j = Math.floor(y), k = Math.floor(z);
+    x -= i; y -= j; z -= k;
+    x = x * x * (3 - 2 * x); y = y * y * (3 - 2 * y); z = z * z * (3 - 2 * z);
+    var a = hash3(i, j, k), b = hash3(i + 1, j, k), c = hash3(i, j + 1, k), d = hash3(i + 1, j + 1, k);
+    var e = hash3(i, j, k + 1), f = hash3(i + 1, j, k + 1), g = hash3(i, j + 1, k + 1), h = hash3(i + 1, j + 1, k + 1);
+    a += (b - a) * x; c += (d - c) * x; e += (f - e) * x; g += (h - g) * x;
+    a += (c - a) * y; e += (g - e) * y;
+    return a + (e - a) * z;
   }
 
+  /* Surface look: a tabby coat with a white bib, muzzle and socks. Hue runs along the ramp,
+     sat says how much of it shows through the grey of the fur, tone is brightness.
+     Kinds: 1 fur, 2 iris, 3 pupil, 4 nose leather, 5 highlight. */
+  var EYE = [0.088, 0.492, 0.052, 0.034];    // centre x, y; half-width, half-height
+  var pHue = 0, pSat = 0.5, pTone = 1, pKind = 1;
+  function paint(x, y, z, nx, ny, nz) {
+    var ao = sdf(x + nx * 0.08, y + ny * 0.08, z + nz * 0.08) / 0.08;
+    var hk = 1 + (HS - 1) * ramp01(0.3, 0.4, y);                               // head-local coordinates above the neck
+    x /= hk; y = HPY + (y - HPY) / hk; z = HPZ + (z - HPZ) / hk;
+    var ax = x < 0 ? -x : x;
+    var ex = ax - EYE[0], ey = y - EYE[1] - 0.25 * ex;                         // almond, outer corner higher
+    var er = (ex / EYE[2]) * (ex / EYE[2]) + (ey / EYE[3]) * (ey / EYE[3]);
+    if (z > 0.24 && er < 1) {
+      var px = ex / 0.0125, py = ey / 0.031;
+      if (px * px + py * py < 1) { pKind = 3; pHue = 1; pSat = 1; pTone = 1; return; }
+      var rr = Math.min(1, Math.sqrt(ex * ex + ey * ey) / 0.047);
+      pKind = 2; pHue = 0.76 + 0.24 * rr; pSat = 1;
+      pTone = (1.12 - 0.5 * rr * rr) * (1 - 0.35 * ramp01(0.006, 0.03, ey)) * (0.9 + 0.2 * noise3(x * 160, y * 160, z * 160));
+      return;
+    }
+    if (z > 0.37 && y > 0.411 && y < 0.449 && ax < (y - 0.408) * 0.72 + 0.003) { pKind = 4; pHue = 0; pSat = 0; pTone = 0.95; return; }
+    pKind = 1;
+    pHue = Math.min(1, Math.max(0, (0.9 - y) / 1.9)) * 0.5;                    // violet ears -> teal feet
+    pSat = 0.56;
+    pTone = 0.45 + 0.55 * (ao < 0 ? 0 : ao > 1 ? 1 : ao);
+    var w = noise3(x * 4.5 + 7, y * 4.5, z * 4.5) - 0.5, w2 = noise3(x * 11, y * 11 + 3, z * 11) - 0.5;
+    var onTail = 0, stripe;
+    if (y < -0.8) { tailNear(x, y, z); onTail = ramp01(0.03, 0.005, tlD); }
+    if (y > 0.3) {                                                            // head: an M on the brow, bars on the cheeks
+      var brow = Math.sin(ax * 62 + w * 5 + 0.4), cheek = Math.sin((y - 0.34 * ax) * 78 + w * 5);
+      var kc = ramp01(0.1, 0.16, ax) * ramp01(0.52, 0.47, y);
+      stripe = (brow + (cheek - brow) * kc) * ramp01(0.5, 0.56, y + kc) * (1 - ramp01(0.56, 0.62, y) * ramp01(0.1, 0.2, nz) * ramp01(0.09, 0.13, ax));
+    } else {                                                                  // body and legs: bars across the spine
+      stripe = Math.sin((y + 0.5 * z - 0.22 * ax) * 27 + w * 7 + w2 * 2);
+    }
+    if (onTail > 0) stripe += (Math.sin(tlT * 3.6 + 0.8) - stripe) * onTail;   // rings on the tail
+    stripe = ramp01(0.25, 0.8, stripe);
+    // white: bib, muzzle and chin, socks
+    var bib = ramp01(0.0, 0.14, z + w * 0.08) * ramp01(0.21, 0.07, ax + w2 * 0.05) * ramp01(0.34, 0.16, y) * ramp01(-0.5, -0.28, y + w * 0.1);
+    var muz = ramp01(0.27, 0.31, z) * ramp01(0.115, 0.07, ax + w2 * 0.03) * ramp01(0.455, 0.425, y - 0.5 * ax);
+    var sock = ramp01(-0.84, -0.9, y + w2 * 0.05) * ramp01(0.04, 0.12, z) * (1 - onTail);
+    var white = Math.max(bib, muz, sock);
+    var inEar = ramp01(0.6, 0.66, y) * ramp01(0.15, 0.4, nz) * ramp01(0.08, 0.12, ax);
+    pTone *= 1 - 0.56 * stripe * (1 - white) * (1 - inEar);
+    pSat += 0.1 * stripe;
+    pSat *= 1 - 0.86 * white; pTone *= 1 + 0.5 * white;
+    pSat *= 1 - 0.6 * inEar; pTone *= 1 - 0.12 * inEar;
+    pTone *= 1 - 0.62 * ramp01(1.75, 1.05, er) * (z > 0.24 ? 1 : 0);          // dark rims round the eyes
+    if (z > 0.36 && ax < 0.006 && y > 0.383 && y < 0.412) pTone *= 0.5;        // the line under the nose
+  }
+
+  /* ---- Colours from the CSS tokens ---- */
   /* ---- Colours from the CSS tokens ---- */
   var stops = [], bgRGB = [11, 13, 18], darkRGB = [11, 13, 18];
   var lineCol = '#888', surfaceCol = '#111', accentCol = '#88f', camCols = ['#888', '#888', '#888'];
@@ -155,6 +235,14 @@
     var f = (h < 0 ? 0 : h > 1 ? 1 : h) * (stops.length - 1), a = Math.floor(f), t = f - a;
     var s0 = stops[a], s1 = stops[Math.min(a + 1, stops.length - 1)];
     rc[0] = s0[0] + (s1[0] - s0[0]) * t; rc[1] = s0[1] + (s1[1] - s0[1]) * t; rc[2] = s0[2] + (s1[2] - s0[2]) * t;
+  }
+  var FURGREY = [226, 229, 238], LEATHER = [186, 118, 132];
+  function albedo(kind, hue, sat) {           // into rc
+    if (kind === 3) { rc[0] = darkRGB[0]; rc[1] = darkRGB[1]; rc[2] = darkRGB[2]; return; }
+    if (kind === 4) { rc[0] = LEATHER[0]; rc[1] = LEATHER[1]; rc[2] = LEATHER[2]; return; }
+    if (kind === 5) { rc[0] = rc[1] = rc[2] = 255; return; }
+    rampRGB(hue);
+    for (var c = 0; c < 3; c++) rc[c] = FURGREY[c] + (rc[c] - FURGREY[c]) * sat;
   }
   function readTheme() {
     var cs = getComputedStyle(root), isLight = root.getAttribute('data-theme') === 'light';
@@ -173,7 +261,7 @@
     var c = document.createElement('canvas');
     c.width = w; c.height = h;
     return { w: w, h: h, pxs: pxs, az: az, el: el, row: 0, canvas: c,
-             kind: new Uint8Array(w * h), hue: new Float32Array(w * h), lit: new Float32Array(w * h), rim: new Float32Array(w * h) };
+             kind: new Uint8Array(w * h), hue: new Float32Array(w * h), sat: new Float32Array(w * h), lit: new Float32Array(w * h), rim: new Float32Array(w * h) };
   }
   var NP = IW * IH, mainView = makeView(IW, IH, PXS, 0, 0);
   var LEVELS = [new Float32Array(NP * 3), new Float32Array(NP * 3), new Float32Array(NP * 3), new Float32Array(NP * 3)];
@@ -205,8 +293,8 @@
       nzr = gny * se + nzr * ce;
       var diff = Math.max(0, nxr * LIGHT[0] + nyr * LIGHT[1] + nzr * LIGHT[2]);
       var fill = Math.max(0, nxr * FILL[0] + nyr * FILL[1] + nzr * FILL[2]);
-      V.kind[k] = pKind; V.hue[k] = pHue;
-      V.lit[k] = pKind === 1 ? (0.24 + 0.82 * diff + 0.2 * fill) * pTone : 1;
+      V.kind[k] = pKind; V.hue[k] = pHue; V.sat[k] = pSat;
+      V.lit[k] = pKind === 3 || pKind === 5 ? 1 : (0.24 + 0.82 * diff + 0.2 * fill) * pTone;
       V.rim[k] = pKind === 1 ? Math.pow(1 - Math.abs(nxr * dx + nyr * dy + nzr * dz), 3) * 0.4 : 0;
     }
   }
@@ -224,21 +312,23 @@
     }
   }
   function colourView(V, X) {   // X: rgb floats, 0..255
-    var c;
+    var c, shot = splatsReady && gl ? shootView(V) : null;   // once the model exists, its own rendering
     for (var j = 0; j < V.h; j++) {
       var y = FY - (j + 0.5) * V.pxs;
       for (var i = 0; i < V.w; i++) {
         var x = -FX + (i + 0.5) * V.pxs, k = j * V.w + i, o = k * 3;
-        if (V.kind[k] === 0) {                                 // backdrop: wall, floor, contact shadow
+        if (shot || V.kind[k] === 0) {                         // backdrop: wall, floor, contact shadow
           var floor = y < -0.985, g = floor ? 0.2 : 0.1 + 0.07 * (y + FY) / (2 * FY);
           rampRGB(floor ? 0.3 : 0.08);
           var sh = Math.exp(-(x * x / 0.5 + (y + 1.0) * (y + 1.0) / 0.006)) * 0.5;
           var vg = 1 - 0.13 * (x * x / (FX * FX) + y * y / (FY * FY));
           for (c = 0; c < 3; c++) X[o + c] = (bgRGB[c] + (rc[c] - bgRGB[c]) * g) * (1 - sh) * vg;
-        } else if (V.kind[k] === 3) {
-          for (c = 0; c < 3; c++) X[o + c] = darkRGB[c];
+          if (shot) {
+            var sa = shot[k * 4 + 3] / 255;
+            for (c = 0; c < 3; c++) X[o + c] += (shot[k * 4 + c] - X[o + c]) * sa;
+          }
         } else {
-          rampRGB(V.hue[k]);
+          albedo(V.kind[k], V.hue[k], V.sat[k]);
           var L = Math.min(1.2, V.lit[k]) + V.rim[k];
           for (c = 0; c < 3; c++) X[o + c] = Math.min(255, rc[c] * L);
         }
@@ -247,7 +337,7 @@
   }
   function colourImage() {
     colourView(mainView, LEVELS[0]);
-    blur(LEVELS[0], LEVELS[1], 2); blur(LEVELS[1], LEVELS[2], 4); blur(LEVELS[2], LEVELS[3], 8);
+    blur(LEVELS[0], LEVELS[1], 4); blur(LEVELS[1], LEVELS[2], 8); blur(LEVELS[2], LEVELS[3], 16);
     imgKey = '';
   }
   function colourThumb(V) {
@@ -300,10 +390,10 @@
   }
 
   /* ---- The 3D model as Gaussians: centre, two scaled tangent axes, normal, colour ---- */
-  var SMAX = 10400, SM = 0, STRIDE = 22;
+  var SMAX = 32768, SM = 0, STRIDE = 22;
   var SRC = new Float32Array(SMAX * STRIDE), DST = new Float32Array(SMAX * STRIDE);
-  var Shue = new Float32Array(SMAX), Skind = new Uint8Array(SMAX), skeys = new Float64Array(SMAX);
-  var splatsReady = false;
+  var Shue = new Float32Array(SMAX), Ssat = new Float32Array(SMAX), Skind = new Uint8Array(SMAX), skeys = new Float64Array(SMAX);
+  var splatsReady = false, FLOATERS = 0;
 
   function addSplat(cx, cy, cz, nx, ny, nz, tx, ty, tz, s1, s2, hue, kind, alpha, tone, spec) {
     if (SM >= SMAX) return;
@@ -319,7 +409,7 @@
     SRC[o + 9] = nx; SRC[o + 10] = ny; SRC[o + 11] = nz;
     SRC[o + 15] = alpha; SRC[o + 16] = tone; SRC[o + 17] = spec;
     SRC[o + 18] = gauss(); SRC[o + 19] = gauss(); SRC[o + 20] = gauss(); SRC[o + 21] = rand() * 0.93;   // training: start offset, birth
-    Shue[SM] = hue; Skind[SM] = kind; SM++;
+    Shue[SM] = hue; Ssat[SM] = pSat; Skind[SM] = kind; SM++;
   }
   var spx = 0, spy = 0, spz = 0;
   function surfacePoint(x0, x1, y0, y1, z0, z1) {   // drop a random point onto the surface
@@ -334,47 +424,82 @@
       if (d < 0.004 && d > -0.004) { grad(x, y, z); spx = x; spy = y; spz = z; return; }
     }
   }
-  var FUR = 9300;
+  /* An undercoat of round splats just beneath the surface keeps the body solid; over it lie
+     thin strands combed the way the fur grows: back from the nose, down the body, along the tail. */
+  var COAT = 6500, FUR = 27500;
   function sampleFur(count) {
     for (var i = 0; i < count && SM < FUR; i++) {
-      surfacePoint(-0.72, 0.95, -1.03, 0.98, -0.5, 0.56);
-      paint(spx, spy, spz, gnx, gny, gnz);
+      surfacePoint(-0.5, 0.95, -1.03, 0.93, -0.66, 0.66);
+      var x = spx, y = spy, z = spz, nx = gnx, ny = gny, nz = gnz;
+      paint(x, y, z, nx, ny, nz);
       if (pKind !== 1) continue;
-      var s = 0.0125 * Math.exp(gauss() * 0.3);
-      // long axis combed down the body, with some disorder
-      addSplat(spx, spy, spz, gnx, gny, gnz, gauss() * 0.5, -1, gauss() * 0.5,
-        s * (1.25 + rand() * 1.2), s * (0.75 + rand() * 0.35),
-        pHue + gauss() * 0.012, 1, 0.9, pTone * (0.94 + rand() * 0.12), 0.05);
+      if (SM < COAT) {
+        var r = 0.016 * Math.exp(gauss() * 0.2);
+        addSplat(x - nx * 0.006, y - ny * 0.006, z - nz * 0.006, nx, ny, nz, gauss(), gauss(), gauss(), r, r * 0.9,
+          pHue, 1, 0.94, pTone * 0.92, 0);
+        continue;
+      }
+      var fx = gauss() * 0.3, fy = -1, fz = -0.25 + gauss() * 0.3, face = y > 0.3 && z > 0.12;
+      if (y > 0.3) { fx = x * 4 + gauss() * 0.25; fy = (y - 0.44) * 4 + gauss() * 0.25; fz = (z - 0.46) * 4; }
+      if (y < -0.8) {
+        tailNear(x, y, z);
+        if (tlD < 0.02) { var k = Math.min(9, Math.floor(tlT)); fx = TX[k + 1] - TX[k]; fy = TY[k + 1] - TY[k]; fz = TZ[k + 1] - TZ[k]; }
+      }
+      var len = (face ? 0.0085 : 0.0165) * Math.exp(gauss() * 0.28), lift = rand() * 0.005;
+      addSplat(x + nx * lift, y + ny * lift, z + nz * lift, nx, ny, nz, fx, fy, fz,
+        len, face ? 0.0042 : 0.0052,
+        pHue + gauss() * 0.012, 1, 0.86, pTone * (0.8 + rand() * 0.36), 0.04);
     }
     return SM >= FUR;
   }
   function sampleDetails() {
-    var i, sx;
+    var i, sx, it, pd;
+    var WX = 0, WY = 0;
+    function frontZ(x, y) {                    // head-local x, y -> the world point on the face (WX, WY, returned z)
+      WX = x * HS; WY = HPY + (y - HPY) * HS;
+      var z = 0.7; for (it = 0; it < 30; it++) { pd = sdf(WX, WY, z); z -= pd; if (pd < 0.0008) break; }
+      grad(WX, WY, z); return z;
+    }
+    function headPoint(x0, x1, y0, y1, z0, z1) {
+      surfacePoint(x0 * HS, x1 * HS, HPY + (y0 - HPY) * HS, HPY + (y1 - HPY) * HS, HPZ + (z0 - HPZ) * HS, HPZ + (z1 - HPZ) * HS);
+    }
     for (sx = -1; sx <= 1; sx += 2) {
-      for (i = 0; i < 150; i++) {                         // eyes: iris, pupil
-        if (sx < 0) surfacePoint(-0.25, -0.06, 0.28, 0.49, 0.24, 0.5); else surfacePoint(0.06, 0.25, 0.28, 0.49, 0.24, 0.5);
+      for (i = 0; i < 520; i++) {                         // iris: small round splats
+        if (sx < 0) headPoint(-0.16, -0.02, 0.43, 0.56, 0.25, 0.42); else headPoint(0.02, 0.16, 0.43, 0.56, 0.25, 0.42);
         paint(spx, spy, spz, gnx, gny, gnz);
-        if (pKind === 1) continue;
-        var lift = pKind === 3 ? 0.024 : 0.008;
-        if (pKind === 3) addSplat(spx + gnx * lift, spy + gny * lift, spz + gnz * lift, gnx, gny, gnz, 0, 1, 0, 0.016, 0.0075, 1, 3, 0.98, 1, 1.0);
-        else addSplat(spx + gnx * lift, spy + gny * lift, spz + gnz * lift, gnx, gny, gnz, gauss(), gauss(), gauss(), 0.012, 0.011, 1, 2, 0.97, 1.05, 0.45);
-        SRC[(SM - 1) * STRIDE + 21] = pKind === 3 ? 0.72 + rand() * 0.15 : 0.45 + rand() * 0.25;   // eyes resolve late in training
+        if (pKind !== 2) continue;
+        addSplat(spx + gnx * 0.007, spy + gny * 0.007, spz + gnz * 0.007, gnx, gny, gnz, gauss(), gauss(), gauss(), 0.0062 * HS, 0.0058 * HS, pHue, 2, 0.96, pTone, 0.05);
+        SRC[(SM - 1) * STRIDE + 21] = 0.45 + rand() * 0.25;   // eyes resolve late in training
       }
-      [0.2, 0.02, -0.16].forEach(function (dy) {          // whiskers: needles
-        var dl = Math.sqrt(1 + dy * dy + 0.0144), dx = sx / dl, wy = dy / dl, dz = 0.12 / dl;
-        addSplat(sx * 0.11 + dx * 0.17, 0.25 + wy * 0.17, 0.41 + dz * 0.17, -dz, 0, dx, dx, wy, dz, 0.058, 0.003, 0.68, 1, 0.6, 1.5, 0);
+      pSat = 1;
+      for (i = -2; i <= 2; i++) {                         // pupil: a column of upright Gaussians
+        var py = EYE[1] + i * 0.0105, pz = frontZ(sx * EYE[0], py), a = Math.abs(i);
+        addSplat(WX + gnx * 0.013, WY + gny * 0.013, pz + gnz * 0.013, gnx, gny, gnz, 0, 1, 0, (0.0108 - a * 0.0016) * HS, (0.0064 - a * 0.0012) * HS, 1, 3, 0.99, 1, 0);
+        SRC[(SM - 1) * STRIDE + 21] = 0.72 + rand() * 0.15;
+      }
+      var gz = frontZ(sx * EYE[0] - 0.014, EYE[1] + 0.012);   // the light, reflected in the eye
+      addSplat(WX + gnx * 0.02, WY + gny * 0.02, gz + gnz * 0.02, gnx, gny, gnz, 1, 0, 0, 0.005, 0.005, 1, 5, 0.97, 1, 0);
+      SRC[(SM - 1) * STRIDE + 21] = 0.9;
+      pSat = 0.04;
+      [[0.05, 0.4, 0.14, 0.24], [0.055, 0.392, 0.02, 0.25], [0.05, 0.384, -0.1, 0.23], [0.04, 0.378, -0.2, 0.18],   // whiskers
+       [0.07, 0.545, 0.55, 0.11], [0.085, 0.55, 0.75, 0.1]].forEach(function (wk) {                                  // and brows
+        var dl = Math.sqrt(1 + wk[2] * wk[2] + 0.02), dx = sx / dl, wy = wk[2] / dl, dz = 0.14 / dl, half = wk[3] / 2 * HS;
+        var bz = frontZ(sx * wk[0], wk[1]);
+        addSplat(WX + dx * half, WY + wy * half, bz + dz * half, -dz, 0, dx, dx, wy, dz, half / 3, 0.0019, 0.5, 1, 0.5, 1.5, 0);
         SRC[(SM - 1) * STRIDE + 21] = 0.93;
       });
     }
-    for (i = 0; i < 40; i++) {                            // nose
-      surfacePoint(-0.05, 0.05, 0.25, 0.32, 0.38, 0.47);
+    for (i = 0; i < 260; i++) {                           // nose leather
+      headPoint(-0.04, 0.04, 0.4, 0.46, 0.36, 0.43);
       paint(spx, spy, spz, gnx, gny, gnz);
-      if (pKind === 3) addSplat(spx + gnx * 0.01, spy + gny * 0.01, spz + gnz * 0.01, gnx, gny, gnz, 1, 0, 0, 0.009, 0.008, 1, 3, 0.97, 1, 0.6), SRC[(SM - 1) * STRIDE + 21] = 0.8;
+      if (pKind === 4) addSplat(spx + gnx * 0.006, spy + gny * 0.006, spz + gnz * 0.006, gnx, gny, gnz, 1, 0, 0, 0.0062, 0.0058, 0, 4, 0.97, pTone, 0.12), SRC[(SM - 1) * STRIDE + 21] = 0.8;
     }
-    for (i = 0; i < 26; i++) {                            // floaters, as in real captures
-      var a = rand() * Math.PI * 2, r = 0.9 + rand() * 0.3, fy = -0.9 + rand() * 1.9;
-      addSplat(Math.cos(a) * r, fy, Math.sin(a) * r, gauss(), gauss(), gauss() + 0.01, gauss(), gauss(), gauss(),
-        0.018 + rand() * 0.04, 0.004 + rand() * 0.004, Math.min(1, Math.max(0, (1 - fy) / 1.95)) * 0.5, 1, 0.28 + rand() * 0.3, 0.9, 0);
+    FLOATERS = SM;
+    pSat = 0.56;
+    for (i = 0; i < 14; i++) {                            // floaters, as in real captures
+      var fa = rand() * Math.PI * 2, fr = 0.9 + rand() * 0.3, fy = -0.9 + rand() * 1.9;
+      addSplat(Math.cos(fa) * fr, fy, Math.sin(fa) * fr, gauss(), gauss(), gauss() + 0.01, gauss(), gauss(), gauss(),
+        0.018 + rand() * 0.04, 0.004 + rand() * 0.004, Math.min(1, Math.max(0, (1 - fy) / 1.95)) * 0.5, 1, 0.2 + rand() * 0.2, 0.9, 0);
       SRC[(SM - 1) * STRIDE + 21] = 0.55 + rand() * 0.38;
     }
     // normalise the floaters' normals
@@ -386,8 +511,8 @@
   function colourSplats() {
     for (var i = 0; i < SM; i++) {
       var o = i * STRIDE + 12;
-      if (Skind[i] === 3) { SRC[o] = darkRGB[0] / 255; SRC[o + 1] = darkRGB[1] / 255; SRC[o + 2] = darkRGB[2] / 255; }
-      else { rampRGB(Shue[i]); SRC[o] = rc[0] / 255; SRC[o + 1] = rc[1] / 255; SRC[o + 2] = rc[2] / 255; }
+      albedo(Skind[i], Shue[i], Ssat[i]);
+      SRC[o] = rc[0] / 255; SRC[o + 1] = rc[1] / 255; SRC[o + 2] = rc[2] / 255;
     }
   }
 
@@ -450,18 +575,18 @@
   }
   function nrm(v) { var l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; }
   var Ln = nrm(LIGHT), Fn = nrm(FILL);
-  function renderSplats(train, bandY, bandW) {   // same size and framing as the 2D canvas
-    var cw = canvas.width, ch = canvas.height;
+  function renderSplats(train, bandY, bandW, cw, ch, sx, sy, ox, oy, count) {
     if (glc.width !== cw || glc.height !== ch) { glc.width = cw; glc.height = ch; }
+    var SM = count;
     // back-to-front
     for (var i = 0; i < SM; i++) {
       var o = i * STRIDE, zv = -SRC[o] * say + SRC[o + 2] * cay;
       zv = SRC[o + 1] * sax + zv * cax;
-      skeys[i] = Math.floor((zv + 8) * 4096) * 16384 + i;
+      skeys[i] = Math.floor((zv + 8) * 4096) * 65536 + i;
     }
     var keys = skeys.subarray(0, SM); keys.sort();
     for (var n = 0; n < SM; n++) {
-      var s = (keys[n] % 16384) * STRIDE, d = n * STRIDE;
+      var s = (keys[n] % 65536) * STRIDE, d = n * STRIDE;
       for (var k = 0; k < STRIDE; k++) DST[d + k] = SRC[s + k];
     }
     gl.viewport(0, 0, cw, ch);
@@ -471,11 +596,24 @@
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, DST, 0, SM * STRIDE);
     gl.uniformMatrix3fv(U.uRot, false, [cay, say * sax, -say * cax, 0, cax, sax, say, -cay * sax, cay * cax]);
     gl.uniform1f(U.uTrain, train); gl.uniform1f(U.uCam, CAM);
-    gl.uniform2f(U.uS, R * dpr / (cw / 2), R * dpr / (ch / 2));
-    gl.uniform2f(U.uO, cx * dpr / (cw / 2) - 1, 1 - cy * dpr / (ch / 2));
+    gl.uniform2f(U.uS, sx, sy);
+    gl.uniform2f(U.uO, ox, oy);
     gl.uniform1f(U.uBandY, bandY); gl.uniform1f(U.uBandW, bandW);
     gl.uniform3fv(U.uL, Ln); gl.uniform3fv(U.uF, Fn);
     gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, SM);
+  }
+  /* A camera's picture, rendered from the finished splats (without the floaters), so that
+     the pictures and the model are the same thing. Returns RGBA at the view's size. */
+  var shotC = document.createElement('canvas'), shotX = shotC.getContext('2d', { willReadFrequently: true }), SHOT_SS = 4;
+  function shootView(V) {
+    var a = cay, b = say, c = cax, d = sax;
+    cay = Math.cos(-V.az); say = Math.sin(-V.az); cax = Math.cos(V.el); sax = Math.sin(V.el);
+    renderSplats(1, 0, 0, V.w * SHOT_SS, V.h * SHOT_SS, 1 / FX, 1 / FY, 0, 0, FLOATERS);
+    cay = a; say = b; cax = c; sax = d;
+    shotC.width = V.w; shotC.height = V.h;
+    shotX.imageSmoothingQuality = 'high';
+    shotX.drawImage(glc, 0, 0, V.w, V.h);
+    return shotX.getImageData(0, 0, V.w, V.h).data;
   }
 
   /* ---- The sketch input ("Vázlat / Kép"), in image-plane coordinates ---- */
@@ -491,25 +629,31 @@
       sketch.push(pts);
     }
     var PI = Math.PI;
-    ellipse([0, -0.5], [0.45, 0.5], PI * 0.64, PI * 2.36, 40);            // body
-    ellipse([0, 0.35], [0.41, 0.33], -PI * 0.42, PI * 1.42, 40);          // head
+    ellipse([0, -0.46], [0.4, 0.52], PI * 0.62, PI * 2.38, 40);           // body
+    ellipse([0, 0.47], [0.23, 0.2], -PI * 0.4, PI * 1.4, 36);             // head
     [-1, 1].forEach(function (s) {                                         // ears
-      sketch.push([[s * 0.38 + wob(), 0.5 + wob()], [s * 0.33 + wob(), 0.92 + wob()], [s * 0.1 + wob(), 0.66 + wob()]]);
+      sketch.push([[s * 0.21 + wob(), 0.56 + wob()], [s * 0.2 + wob(), 0.8 + wob()], [s * 0.06 + wob(), 0.65 + wob()]]);
     });
-    var tail = [];
-    for (var i = 0; i <= 18; i++) { var c = tailAt(0.18 + 0.82 * i / 18); tail.push([c[0] + wob(), c[1] + wob()]); }
+    var tail = [];                                                         // tail, curled round to the front
+    for (var i = 0; i <= 16; i++) {
+      var a = -PI * 0.5 + PI * 1.05 * (1 - i / 16);
+      tail.push([0.38 + 0.26 * Math.cos(a) * (1 - 0.25 * i / 16) + wob(), -0.9 + 0.085 * Math.sin(a) + wob()]);
+    }
     sketch.push(tail);
-    [-1, 1].forEach(function (s) { ellipse([s * 0.155, 0.385], [0.07, 0.08], 0, PI * 2, 14); });   // eyes
-    sketch.push([[-0.04, 0.3], [0.04, 0.3], [0, 0.25], [-0.04, 0.3]]);                              // nose
+    [-1, 1].forEach(function (s) { ellipse([s * 0.088, 0.492], [0.05, 0.034], 0, PI * 2, 14); });   // eyes
+    sketch.push([[-0.026, 0.447], [0.026, 0.447], [0, 0.414], [-0.026, 0.447]]);                    // nose
     [-1, 1].forEach(function (s) {                                                                   // whiskers
-      sketch.push([[s * 0.12, 0.24], [s * 0.5, 0.3]]);
-      sketch.push([[s * 0.12, 0.2], [s * 0.5, 0.16]]);
+      sketch.push([[s * 0.06, 0.4], [s * 0.3, 0.43]]);
+      sketch.push([[s * 0.06, 0.385], [s * 0.3, 0.355]]);
     });
-    // two feet set well apart, each a low arch with toe marks
+    // two feet set apart, each a low arch with toe marks
     [-1, 1].forEach(function (s) {
-      ellipse([s * 0.24, -0.99], [0.15, 0.1], 0, PI, 10);
-      sketch.push([[s * 0.2 + wob(), -0.98], [s * 0.2 + wob(), -0.93]]);
-      sketch.push([[s * 0.28 + wob(), -0.98], [s * 0.28 + wob(), -0.93]]);
+      ellipse([s * 0.13, -0.99], [0.085, 0.07], 0, PI, 10);
+      sketch.push([[s * 0.105 + wob(), -0.98], [s * 0.105 + wob(), -0.945]]);
+      sketch.push([[s * 0.155 + wob(), -0.98], [s * 0.155 + wob(), -0.945]]);
+    });
+    [1, 2, 3, 5, 6, 7, 8, 9, 10, 11].forEach(function (k) {                 // the head, at the model's scale
+      sketch[k].forEach(function (pt) { pt[0] *= HS; pt[1] = HPY + (pt[1] - HPY) * HS; });
     });
     sketch.forEach(function (pts) { sketchLen += pts.length - 1; });
   })();
@@ -529,7 +673,7 @@
     return { pos: pos, f: f, rt: rt, up: up, d: d, w: w, h: h, idx: idx, targets: [],
              TL: at(-1, 1, 0), TR: at(1, 1, 0), BR: at(1, -1, 0), BL: at(-1, -1, 0),
              mark: [at(-0.4, 1, 0), at(0, 1, 0.07), at(0.4, 1, 0)],   // "this way up"
-             view: idx ? makeView(34, 44, 0.05, c[0], c[1]) : mainView };
+             view: idx ? makeView(68, 88, 0.025, c[0], c[1]) : mainView };
   });
   function pickTargets() {   // surface points each camera can actually see, inside its field of view
     cams.forEach(function (c) {
@@ -548,13 +692,18 @@
   /* ---- Background build: nothing here is needed until the input step has played ---- */
   var jobs = [];
   function traceJob(V) { return function () { for (var n = 0; n < 6 && V.row < V.h; n++) traceRow(V, V.row++); return V.row >= V.h; }; }
-  jobs.push(traceJob(mainView));
-  jobs.push(function () { colourImage(); imageReady = true; redrawIdle(); return true; });
-  jobs.push(traceJob(cams[1].view));
-  jobs.push(traceJob(cams[2].view));
-  jobs.push(function () { colourThumb(cams[1].view); colourThumb(cams[2].view); return true; });
-  jobs.push(function () { return sampleFur(260); });
-  jobs.push(function () { sampleDetails(); colourSplats(); pickTargets(); initGL(); splatsReady = true; redrawIdle(); return true; });
+  initGL();
+  if (!gl) {                                 // no WebGL2: the pictures are ray-traced, and the loop stays on the image
+    jobs.push(traceJob(mainView));
+    jobs.push(function () { colourImage(); imageReady = true; redrawIdle(); return true; });
+  } else {                                   // otherwise every picture is a rendering of the splats
+    jobs.push(function () { return sampleFur(400); });
+    jobs.push(function () {
+      sampleDetails(); colourSplats(); pickTargets(); splatsReady = true;
+      colourImage(); colourThumb(cams[1].view); colourThumb(cams[2].view); imageReady = true;
+      redrawIdle(); return true;
+    });
+  }
   function pump() {
     var t = performance.now();
     while (jobs.length && performance.now() - t < 9) { if (jobs[0]()) jobs.shift(); }
@@ -570,7 +719,6 @@
     canvas.width = Math.max(1, Math.round(W * dpr));
     canvas.height = Math.max(1, Math.round(H * dpr));
   }
-  var px = 0, py = 0, tpx = 0, tpy = 0;
   var cx = 0, cy = 0, R = 1, cay = 1, say = 0, cax = 1, sax = 0;
   var out = [0, 0, 0, 0];
 
@@ -797,8 +945,7 @@
     cy = wide ? H * 0.5 : 176;
     R = wide ? Math.min(H * 0.36, W * 0.185) : Math.min(124, W * 0.32);
 
-    px += (tpx - px) * 0.06; py += (tpy - py) * 0.06;
-    var ay = turn + px * 0.7, ax = 0.2 * (in3d ? smooth(s / 0.4) * (1 - smooth((r - 0.5) / 0.5)) : 0) + py * 0.4;
+    var ay = turn, ax = 0.2 * (in3d ? smooth(s / 0.4) * (1 - smooth((r - 0.5) / 0.5)) : 0);
     if (vmix > 0) {                          // the viewer's camera, eased back to the loop's on release
       var dy = viewer.yaw - ay; dy -= Math.PI * 2 * Math.round(dy / (Math.PI * 2));
       ay += dy * vmix; ax += (viewer.pitch - ax) * vmix;
@@ -877,7 +1024,8 @@
     var bp = (p - (T_3D + 0.6)) / (T_FLAT - 1 - T_3D), bandY = animate ? 1.25 - 2.5 * bp : -0.3;
     var bandW = !animate ? 0.24 : (bp > 0 && bp < 1 ? 0.24 : 0);
     if (view) { bandY = 0; bandW = viewer.splats ? 9 : 0; }   // in the viewer the reveal is a switch
-    renderSplats(animate ? train : 1, bandY, bandW);
+    var gw = canvas.width, gh = canvas.height;                 // same size and framing as the 2D canvas
+    renderSplats(animate ? train : 1, bandY, bandW, gw, gh, R * dpr / (gw / 2), R * dpr / (gh / 2), cx * dpr / (gw / 2) - 1, 1 - cy * dpr / (gh / 2), SM);
     ctx.globalAlpha = animate ? modelA : 1;
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(glc, 0, 0, W, H);
@@ -973,18 +1121,11 @@
   reduceMotion.addEventListener('change', update);
   new MutationObserver(function () {
     readTheme();
+    if (splatsReady) colourSplats();
     if (imageReady) colourImage();
     if (splatsReady) { colourThumb(cams[1].view); colourThumb(cams[2].view); }
-    if (splatsReady) colourSplats();
     redrawIdle();
   }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-
-  hero.addEventListener('pointermove', function (e) {
-    var r = hero.getBoundingClientRect();
-    tpx = (e.clientX - r.left) / r.width - 0.5;
-    tpy = (e.clientY - r.top) / r.height - 0.5;
-  });
-  hero.addEventListener('pointerleave', function () { tpx = 0; tpy = 0; });
 
   /* ---- Viewer: drag the model to orbit, shift- or right-drag to pan, scroll or pinch to zoom ---- */
   var pendingDraw = false, drag = null;
