@@ -190,11 +190,11 @@
     }
     if (z > 0.37 && y > 0.411 && y < 0.449 && ax < (y - 0.408) * 0.72 + 0.003) { pKind = 4; pHue = 0; pSat = 0; pTone = 0.95; return; }
     pKind = 1;
-    pHue = Math.min(1, Math.max(0, (0.9 - y) / 1.9)) * 0.5;                    // violet ears -> teal feet
-    pSat = 0.56;
+    pSat = 1;
     pTone = 0.45 + 0.55 * (ao < 0 ? 0 : ao > 1 ? 1 : ao);
     var w = noise3(x * 4.5 + 7, y * 4.5, z * 4.5) - 0.5, w2 = noise3(x * 11, y * 11 + 3, z * 11) - 0.5;
     var onTail = 0, stripe;
+    pHue = 0.5 * ramp01(-0.25, 0.3, z * 0.7 - ny * 0.25 + w * 0.5);            // darker along the back, paler beneath
     if (y < -0.8) { tailNear(x, y, z); onTail = ramp01(0.03, 0.005, tlD); }
     if (y > 0.3) {                                                            // head: an M on the brow, bars on the cheeks
       var brow = Math.sin(ax * 62 + w * 5 + 0.4), cheek = Math.sin((y - 0.34 * ax) * 78 + w * 5);
@@ -211,10 +211,9 @@
     var sock = ramp01(-0.84, -0.9, y + w2 * 0.05) * ramp01(0.04, 0.12, z) * (1 - onTail);
     var white = Math.max(bib, muz, sock);
     var inEar = ramp01(0.6, 0.66, y) * ramp01(0.15, 0.4, nz) * ramp01(0.08, 0.12, ax);
-    pTone *= 1 - 0.56 * stripe * (1 - white) * (1 - inEar);
-    pSat += 0.1 * stripe;
+    pTone *= 1 - 0.62 * stripe * (1 - white) * (1 - inEar);
     pSat *= 1 - 0.86 * white; pTone *= 1 + 0.5 * white;
-    pSat *= 1 - 0.6 * inEar; pTone *= 1 - 0.12 * inEar;
+    pHue += (1 - pHue) * inEar; pSat *= 1 - 0.25 * inEar; pTone *= 1 - 0.1 * inEar;
     pTone *= 1 - 0.62 * ramp01(1.75, 1.05, er) * (z > 0.24 ? 1 : 0);          // dark rims round the eyes
     if (z > 0.36 && ax < 0.006 && y > 0.383 && y < 0.412) pTone *= 0.5;        // the line under the nose
   }
@@ -236,13 +235,24 @@
     var s0 = stops[a], s1 = stops[Math.min(a + 1, stops.length - 1)];
     rc[0] = s0[0] + (s1[0] - s0[0]) * t; rc[1] = s0[1] + (s1[1] - s0[1]) * t; rc[2] = s0[2] + (s1[2] - s0[2]) * t;
   }
-  var FURGREY = [226, 229, 238], LEATHER = [186, 118, 132];
+  /* Natural colours, independent of the theme. Fur runs from the darker back (hue 0) through the
+     lighter flanks (0.5) to the pink skin inside the ears (1); sat fades it to white. */
+  var FURS = [[158, 104, 58], [206, 152, 94], [222, 158, 148]], WHITE = [242, 238, 230];
+  var IRIS = [[118, 150, 66], [208, 170, 56]], LEATHER = [196, 124, 128];
   function albedo(kind, hue, sat) {           // into rc
     if (kind === 3) { rc[0] = darkRGB[0]; rc[1] = darkRGB[1]; rc[2] = darkRGB[2]; return; }
     if (kind === 4) { rc[0] = LEATHER[0]; rc[1] = LEATHER[1]; rc[2] = LEATHER[2]; return; }
     if (kind === 5) { rc[0] = rc[1] = rc[2] = 255; return; }
-    rampRGB(hue);
-    for (var c = 0; c < 3; c++) rc[c] = FURGREY[c] + (rc[c] - FURGREY[c]) * sat;
+    var c, t;
+    if (kind === 2) {                          // iris: green by the pupil, gold at the rim
+      t = Math.min(1, Math.max(0, (hue - 0.76) / 0.24));
+      for (c = 0; c < 3; c++) rc[c] = IRIS[0][c] + (IRIS[1][c] - IRIS[0][c]) * t;
+      return;
+    }
+    t = Math.min(1, Math.max(0, hue)) * 2;
+    var a = FURS[t < 1 ? 0 : 1], b = FURS[t < 1 ? 1 : 2];
+    t -= t < 1 ? 0 : 1;
+    for (c = 0; c < 3; c++) rc[c] = WHITE[c] + (a[c] + (b[c] - a[c]) * t - WHITE[c]) * sat;
   }
   function readTheme() {
     var cs = getComputedStyle(root), isLight = root.getAttribute('data-theme') === 'light';
@@ -393,7 +403,7 @@
   var SMAX = 32768, SM = 0, STRIDE = 22;
   var SRC = new Float32Array(SMAX * STRIDE), DST = new Float32Array(SMAX * STRIDE);
   var Shue = new Float32Array(SMAX), Ssat = new Float32Array(SMAX), Skind = new Uint8Array(SMAX), skeys = new Float64Array(SMAX);
-  var splatsReady = false, FLOATERS = 0;
+  var splatsReady = false;
 
   function addSplat(cx, cy, cz, nx, ny, nz, tx, ty, tz, s1, s2, hue, kind, alpha, tone, spec) {
     if (SM >= SMAX) return;
@@ -494,15 +504,7 @@
       paint(spx, spy, spz, gnx, gny, gnz);
       if (pKind === 4) addSplat(spx + gnx * 0.006, spy + gny * 0.006, spz + gnz * 0.006, gnx, gny, gnz, 1, 0, 0, 0.0062, 0.0058, 0, 4, 0.97, pTone, 0.12), SRC[(SM - 1) * STRIDE + 21] = 0.8;
     }
-    FLOATERS = SM;
-    pSat = 0.56;
-    for (i = 0; i < 14; i++) {                            // floaters, as in real captures
-      var fa = rand() * Math.PI * 2, fr = 0.9 + rand() * 0.3, fy = -0.9 + rand() * 1.9;
-      addSplat(Math.cos(fa) * fr, fy, Math.sin(fa) * fr, gauss(), gauss(), gauss() + 0.01, gauss(), gauss(), gauss(),
-        0.018 + rand() * 0.04, 0.004 + rand() * 0.004, Math.min(1, Math.max(0, (1 - fy) / 1.95)) * 0.5, 1, 0.2 + rand() * 0.2, 0.9, 0);
-      SRC[(SM - 1) * STRIDE + 21] = 0.55 + rand() * 0.38;
-    }
-    // normalise the floaters' normals
+    // normalise the normals
     for (i = 0; i < SM; i++) {
       var o = i * STRIDE + 9, l = Math.sqrt(SRC[o] * SRC[o] + SRC[o + 1] * SRC[o + 1] + SRC[o + 2] * SRC[o + 2]) || 1;
       SRC[o] /= l; SRC[o + 1] /= l; SRC[o + 2] /= l;
@@ -602,13 +604,13 @@
     gl.uniform3fv(U.uL, Ln); gl.uniform3fv(U.uF, Fn);
     gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, SM);
   }
-  /* A camera's picture, rendered from the finished splats (without the floaters), so that
+  /* A camera's picture, rendered from the finished splats, so that
      the pictures and the model are the same thing. Returns RGBA at the view's size. */
   var shotC = document.createElement('canvas'), shotX = shotC.getContext('2d', { willReadFrequently: true }), SHOT_SS = 4;
   function shootView(V) {
     var a = cay, b = say, c = cax, d = sax;
     cay = Math.cos(-V.az); say = Math.sin(-V.az); cax = Math.cos(V.el); sax = Math.sin(V.el);
-    renderSplats(1, 0, 0, V.w * SHOT_SS, V.h * SHOT_SS, 1 / FX, 1 / FY, 0, 0, FLOATERS);
+    renderSplats(1, 0, 0, V.w * SHOT_SS, V.h * SHOT_SS, 1 / FX, 1 / FY, 0, 0, SM);
     cay = a; say = b; cax = c; sax = d;
     shotC.width = V.w; shotC.height = V.h;
     shotX.imageSmoothingQuality = 'high';
