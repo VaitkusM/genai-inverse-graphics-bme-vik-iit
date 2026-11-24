@@ -105,7 +105,9 @@
     }
   }
 
-  var HS = 1.13, HPY = 0.36, HPZ = 0.12;      // the head is modelled at unit size, then scaled about the top of the neck
+  var HS = 1.2, HPY = 0.36, HPZ = 0.12;      // the head is modelled at unit size, then scaled about the top of the neck
+  var BS = 0.86, BY0 = -0.8, HPW = BY0 + (HPY - BY0) * BS;   // and the body above the paws is shortened to BS
+  function bodyY(y) { return y < BY0 ? y : y < HPW ? BY0 + (y - BY0) / BS : HPY + (y - HPW); }
   function headD(x, y, z) {
     var q = x < 0 ? -x : x;
     var h = sE(x, y, z, 0, 0.475, 0.16, 0.205, 0.18, 0.2, 0.18);             // skull
@@ -116,25 +118,26 @@
     h = sm(h, sE(x, y, z, 0, 0.356, 0.325, 0.045, 0.03, 0.04, 0.03), 0.03);  // chin
     // ears: thin cones, hollowed from the front
     var zz = (z - 0.11) * 2.1;
-    var e = sC(q, y, zz, 0.13, 0.58, 0, 0.2, 0.8, -0.05, 0.12, 0.016);
-    var c = sC(q, y, zz - 0.1, 0.135, 0.615, 0, 0.196, 0.755, -0.05, 0.088, 0.004);
+    var e = sC(q, y, zz, 0.13, 0.58, 0, 0.195, 0.775, -0.05, 0.11, 0.016);
+    var c = sC(q, y, zz - 0.1, 0.135, 0.61, 0, 0.192, 0.735, -0.05, 0.08, 0.004);
     e = -sm(-e, c, 0.025) * 0.47;
     h = sm(h, e, 0.03);
     return h;
   }
 
-  function sdf(x, y, z) {
-    var q = x < 0 ? -x : x;                                                    // left/right symmetry
+  function sdf(x, yw, z) {
+    var q = x < 0 ? -x : x, y = bodyY(yw);                                     // left/right symmetry
     var d = sE(x, y, z, 0, -0.68, -0.2, 0.34, 0.32, 0.36, 0.32);                // rump
     d = sm(d, sC(x, y, z, 0, -0.55, -0.16, 0, 0.05, 0.03, 0.31, 0.215), 0.1);   // back and ribcage, leaning forward
-    d = sm(d, sE(x, y, z, 0, -0.1, 0.14, 0.19, 0.25, 0.14, 0.14), 0.09);        // breast
-    d = sm(d, sE(q, y, z, 0.19, -0.03, 0.07, 0.115, 0.22, 0.15, 0.115), 0.1);   // shoulders
-    d = sm(d, sC(x, y, z, 0, 0.1, 0.04, 0, 0.36, 0.12, 0.2, 0.165), 0.09);      // neck
-    d = sm(d, sE(q, y, z, 0.25, -0.7, -0.06, 0.18, 0.28, 0.3, 0.18), 0.08);     // thighs
+    d = sm(d, sE(x, y, z, 0, -0.1, 0.14, 0.21, 0.27, 0.15, 0.15), 0.09);        // breast
+    d = sm(d, sE(q, y, z, 0.205, -0.02, 0.06, 0.125, 0.23, 0.16, 0.125), 0.1);  // shoulders
+    d = sm(d, sC(x, y, z, 0, 0.1, 0.03, 0, 0.36, 0.11, 0.235, 0.195), 0.1);     // neck
+    d = sm(d, sE(q, y, z, 0.27, -0.7, -0.05, 0.17, 0.28, 0.3, 0.17), 0.045);    // thighs
     d = sm(d, sE(q, y, z, 0.3, -0.957, 0.2, 0.062, 0.043, 0.13, 0.043), 0.04);  // hind paws
-    d = sm(d, sC(q, y, z, 0.13, -0.1, 0.2, 0.122, -0.9, 0.3, 0.092, 0.06), 0.05);    // forelegs
-    d = sm(d, sE(q, y, z, 0.124, -0.955, 0.37, 0.07, 0.046, 0.1, 0.046), 0.035);    // fore paws
-    if (y > 0.2) d = sm(d, headD(x / HS, HPY + (y - HPY) / HS, HPZ + (z - HPZ) / HS) * HS, 0.06);
+    d = sm(d, sE(q, y, z, 0.15, -0.3, 0.13, 0.1, 0.2, 0.13, 0.1), 0.08);       // upper arms, down to the elbows
+    d = sm(d, sC(q, y, z, 0.13, -0.1, 0.2, 0.124, -0.9, 0.28, 0.095, 0.066), 0.05);    // forelegs
+    d = sm(d, sE(q, y, z, 0.126, -0.955, 0.345, 0.072, 0.046, 0.095, 0.046), 0.035);    // fore paws
+    if (y > 0.2) d = sm(d, headD(x / HS, HPY + (yw - HPW) / HS, HPZ + (z - HPZ) / HS) * HS, 0.06);
     if (y < -0.78 && x > -0.1) {
       for (var i = 0; i < 10; i++) {
         d = sm(d, sC(x, y, z, TX[i], TY[i], TZ[i], TX[i + 1], TY[i + 1], TZ[i + 1], TR[i], TR[i + 1]), i ? 0.02 : 0.06);
@@ -171,19 +174,19 @@
   /* Surface look: a tabby coat with a white bib, muzzle and socks. Hue runs along the ramp,
      sat says how much of it shows through the grey of the fur, tone is brightness.
      Kinds: 1 fur, 2 iris, 3 pupil, 4 nose leather, 5 highlight. */
-  var EYE = [0.088, 0.492, 0.052, 0.034];    // centre x, y; half-width, half-height
+  var EYE = [0.088, 0.492, 0.046, 0.031];    // centre x, y; half-width, half-height
   var pHue = 0, pSat = 0.5, pTone = 1, pKind = 1;
   function paint(x, y, z, nx, ny, nz) {
     var ao = sdf(x + nx * 0.08, y + ny * 0.08, z + nz * 0.08) / 0.08;
-    var hk = 1 + (HS - 1) * ramp01(0.3, 0.4, y);                               // head-local coordinates above the neck
-    x /= hk; y = HPY + (y - HPY) / hk; z = HPZ + (z - HPZ) / hk;
+    var hk = 1 + (HS - 1) * ramp01(HPW - 0.05, HPW + 0.04, y);                 // model coordinates: body, then head
+    x /= hk; y = y < HPW ? bodyY(y) : HPY + (y - HPW) / hk; z = HPZ + (z - HPZ) / hk;
     var ax = x < 0 ? -x : x;
     var ex = ax - EYE[0], ey = y - EYE[1] - 0.25 * ex;                         // almond, outer corner higher
     var er = (ex / EYE[2]) * (ex / EYE[2]) + (ey / EYE[3]) * (ey / EYE[3]);
     if (z > 0.24 && er < 1) {
-      var px = ex / 0.0125, py = ey / 0.031;
+      var px = ex / 0.0115, py = ey / 0.028;
       if (px * px + py * py < 1) { pKind = 3; pHue = 1; pSat = 1; pTone = 1; return; }
-      var rr = Math.min(1, Math.sqrt(ex * ex + ey * ey) / 0.047);
+      var rr = Math.min(1, Math.sqrt(ex * ex + ey * ey) / 0.042);
       pKind = 2; pHue = 0.76 + 0.24 * rr; pSat = 1;
       pTone = (1.12 - 0.5 * rr * rr) * (1 - 0.35 * ramp01(0.006, 0.03, ey)) * (0.9 + 0.2 * noise3(x * 160, y * 160, z * 160));
       return;
@@ -439,7 +442,7 @@
   var COAT = 6500, FUR = 27500;
   function sampleFur(count) {
     for (var i = 0; i < count && SM < FUR; i++) {
-      surfacePoint(-0.5, 0.95, -1.03, 0.93, -0.66, 0.66);
+      surfacePoint(-0.5, 0.95, -1.03, 0.82, -0.66, 0.66);
       var x = spx, y = spy, z = spz, nx = gnx, ny = gny, nz = gnz;
       paint(x, y, z, nx, ny, nz);
       if (pKind !== 1) continue;
@@ -449,8 +452,8 @@
           pHue, 1, 0.94, pTone * 0.92, 0);
         continue;
       }
-      var fx = gauss() * 0.3, fy = -1, fz = -0.25 + gauss() * 0.3, face = y > 0.3 && z > 0.12;
-      if (y > 0.3) { fx = x * 4 + gauss() * 0.25; fy = (y - 0.44) * 4 + gauss() * 0.25; fz = (z - 0.46) * 4; }
+      var fx = gauss() * 0.3, fy = -1, fz = -0.25 + gauss() * 0.3, face = y > HPW && z > 0.12;
+      if (y > HPW - 0.03) { fx = x * 4 + gauss() * 0.25; fy = (y - HPW - 0.09) * 4 + gauss() * 0.25; fz = (z - 0.49) * 4; }
       if (y < -0.8) {
         tailNear(x, y, z);
         if (tlD < 0.02) { var k = Math.min(9, Math.floor(tlT)); fx = TX[k + 1] - TX[k]; fy = TY[k + 1] - TY[k]; fz = TZ[k + 1] - TZ[k]; }
@@ -466,12 +469,12 @@
     var i, sx, it, pd;
     var WX = 0, WY = 0;
     function frontZ(x, y) {                    // head-local x, y -> the world point on the face (WX, WY, returned z)
-      WX = x * HS; WY = HPY + (y - HPY) * HS;
+      WX = x * HS; WY = HPW + (y - HPY) * HS;
       var z = 0.7; for (it = 0; it < 30; it++) { pd = sdf(WX, WY, z); z -= pd; if (pd < 0.0008) break; }
       grad(WX, WY, z); return z;
     }
     function headPoint(x0, x1, y0, y1, z0, z1) {
-      surfacePoint(x0 * HS, x1 * HS, HPY + (y0 - HPY) * HS, HPY + (y1 - HPY) * HS, HPZ + (z0 - HPZ) * HS, HPZ + (z1 - HPZ) * HS);
+      surfacePoint(x0 * HS, x1 * HS, HPW + (y0 - HPY) * HS, HPW + (y1 - HPY) * HS, HPZ + (z0 - HPZ) * HS, HPZ + (z1 - HPZ) * HS);
     }
     for (sx = -1; sx <= 1; sx += 2) {
       for (i = 0; i < 520; i++) {                         // iris: small round splats
@@ -483,8 +486,8 @@
       }
       pSat = 1;
       for (i = -2; i <= 2; i++) {                         // pupil: a column of upright Gaussians
-        var py = EYE[1] + i * 0.0105, pz = frontZ(sx * EYE[0], py), a = Math.abs(i);
-        addSplat(WX + gnx * 0.013, WY + gny * 0.013, pz + gnz * 0.013, gnx, gny, gnz, 0, 1, 0, (0.0108 - a * 0.0016) * HS, (0.0064 - a * 0.0012) * HS, 1, 3, 0.99, 1, 0);
+        var py = EYE[1] + i * 0.0095, pz = frontZ(sx * EYE[0], py), a = Math.abs(i);
+        addSplat(WX + gnx * 0.013, WY + gny * 0.013, pz + gnz * 0.013, gnx, gny, gnz, 0, 1, 0, (0.0098 - a * 0.0015) * HS, (0.0058 - a * 0.0011) * HS, 1, 3, 0.99, 1, 0);
         SRC[(SM - 1) * STRIDE + 21] = 0.72 + rand() * 0.15;
       }
       var gz = frontZ(sx * EYE[0] - 0.014, EYE[1] + 0.012);   // the light, reflected in the eye
@@ -492,7 +495,7 @@
       SRC[(SM - 1) * STRIDE + 21] = 0.9;
       pSat = 0.04;
       [[0.05, 0.4, 0.14, 0.24], [0.055, 0.392, 0.02, 0.25], [0.05, 0.384, -0.1, 0.23], [0.04, 0.378, -0.2, 0.18],   // whiskers
-       [0.07, 0.545, 0.55, 0.11], [0.085, 0.55, 0.75, 0.1]].forEach(function (wk) {                                  // and brows
+       [0.075, 0.545, 0.7, 0.06], [0.09, 0.548, 0.95, 0.055]].forEach(function (wk) {                                  // and brows
         var dl = Math.sqrt(1 + wk[2] * wk[2] + 0.02), dx = sx / dl, wy = wk[2] / dl, dz = 0.14 / dl, half = wk[3] / 2 * HS;
         var bz = frontZ(sx * wk[0], wk[1]);
         addSplat(WX + dx * half, WY + wy * half, bz + dz * half, -dz, 0, dx, dx, wy, dz, half / 3, 0.0019, 0.5, 1, 0.5, 1.5, 0);
@@ -631,10 +634,10 @@
       sketch.push(pts);
     }
     var PI = Math.PI;
-    ellipse([0, -0.46], [0.4, 0.52], PI * 0.62, PI * 2.38, 40);           // body
+    ellipse([0, -0.52], [0.4, 0.46], PI * 0.62, PI * 2.38, 40);           // body
     ellipse([0, 0.47], [0.23, 0.2], -PI * 0.4, PI * 1.4, 36);             // head
     [-1, 1].forEach(function (s) {                                         // ears
-      sketch.push([[s * 0.21 + wob(), 0.56 + wob()], [s * 0.2 + wob(), 0.8 + wob()], [s * 0.06 + wob(), 0.65 + wob()]]);
+      sketch.push([[s * 0.21 + wob(), 0.56 + wob()], [s * 0.195 + wob(), 0.775 + wob()], [s * 0.06 + wob(), 0.65 + wob()]]);
     });
     var tail = [];                                                         // tail, curled round to the front
     for (var i = 0; i <= 16; i++) {
@@ -642,7 +645,7 @@
       tail.push([0.38 + 0.26 * Math.cos(a) * (1 - 0.25 * i / 16) + wob(), -0.9 + 0.085 * Math.sin(a) + wob()]);
     }
     sketch.push(tail);
-    [-1, 1].forEach(function (s) { ellipse([s * 0.088, 0.492], [0.05, 0.034], 0, PI * 2, 14); });   // eyes
+    [-1, 1].forEach(function (s) { ellipse([s * 0.088, 0.492], [0.046, 0.031], 0, PI * 2, 14); });   // eyes
     sketch.push([[-0.026, 0.447], [0.026, 0.447], [0, 0.414], [-0.026, 0.447]]);                    // nose
     [-1, 1].forEach(function (s) {                                                                   // whiskers
       sketch.push([[s * 0.06, 0.4], [s * 0.3, 0.43]]);
@@ -655,7 +658,7 @@
       sketch.push([[s * 0.155 + wob(), -0.98], [s * 0.155 + wob(), -0.945]]);
     });
     [1, 2, 3, 5, 6, 7, 8, 9, 10, 11].forEach(function (k) {                 // the head, at the model's scale
-      sketch[k].forEach(function (pt) { pt[0] *= HS; pt[1] = HPY + (pt[1] - HPY) * HS; });
+      sketch[k].forEach(function (pt) { pt[0] *= HS; pt[1] = HPW + (pt[1] - HPY) * HS; });
     });
     sketch.forEach(function (pts) { sketchLen += pts.length - 1; });
   })();
