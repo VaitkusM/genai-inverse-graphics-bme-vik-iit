@@ -2,6 +2,8 @@
 layout: default
 title: Előadások
 permalink: /eloadasok/
+series: eloadasok
+semester: 2026-tavasz
 ---
 
 ## Előadás anyagok

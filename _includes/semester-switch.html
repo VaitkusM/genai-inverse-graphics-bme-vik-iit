@@ -1,0 +1,10 @@
+{%- assign siblings = site.pages | where: "series", page.series -%}
+<div class="semesters" role="navigation" aria-label="Félév">
+<span class="semesters-label">Félév</span>
+{%- for s in site.data.semesters -%}
+  {%- assign p = siblings | where: "semester", s.id | first -%}
+  {%- if p %}
+<a href="{{ p.url | relative_url }}"{% if s.id == page.semester %} aria-current="true"{% endif %}>{{ s.label }}</a>
+  {%- endif -%}
+{%- endfor %}
+</div>

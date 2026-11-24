@@ -1,0 +1,16 @@
+{%- comment -%}
+  Nav link to a per-semester page (include.series). Stays within the semester
+  being viewed when that semester has the page; otherwise the newest one that does.
+{%- endcomment -%}
+{%- assign candidates = site.pages | where: "series", include.series -%}
+{%- assign target = nil -%}
+{%- if page.semester -%}
+  {%- assign target = candidates | where: "semester", page.semester | first -%}
+{%- endif -%}
+{%- unless target -%}
+  {%- for s in site.data.semesters -%}
+    {%- assign target = candidates | where: "semester", s.id | first -%}
+    {%- if target -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+{%- endunless -%}
+<a href="{{ target.url | relative_url }}"{% if page.series == include.series %} aria-current="page"{% endif %}>{{ include.label }}</a>

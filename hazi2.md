@@ -2,6 +2,8 @@
 layout: default
 title: 2. Házi feladat
 permalink: /hazi2/
+series: hazi2
+semester: 2026-tavasz
 ---
 
 ## 2. Házi feladat: Differenciálható volumetrikus renderelés
@@ -29,7 +31,7 @@ nem szükséges.
 
 A feladat egy Jupyter Notebook formájában van kiadva, amely tartalmazza az elméleti hátteret, a kiinduló kódot és a megoldandó feladatokat.
 
-**Letöltés:** [HF2.ipynb](/eloadasok/HF2.ipynb)
+**Letöltés:** [HF2.ipynb]({{ "/eloadasok/HF2.ipynb" | relative_url }})
 
 A notebook futtatható:
 - **Google Colab-ban** (ajánlott, GPU-val a 3. rész is pár perc alatt befut)

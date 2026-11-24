@@ -2,6 +2,8 @@
 layout: default
 title: 1. Házi feladat
 permalink: /hazi1/
+series: hazi1
+semester: 2026-tavasz
 ---
 
 ## 1. Házi feladat: Flow Matching alapú generatív modell
@@ -25,7 +27,7 @@ Ebben a házi feladatban egy **flow matching** alapú generatív modellt fogsz i
 
 A feladat egy Jupyter Notebook formájában van kiadva, amely tartalmazza az elméleti hátteret, a kiinduló kódot és a megoldandó feladatokat.
 
-**Letöltés:** [HF1.ipynb](/eloadasok/HF1.ipynb)
+**Letöltés:** [HF1.ipynb]({{ "/eloadasok/HF1.ipynb" | relative_url }})
 
 A notebook futtatható:
 - **Google Colab-ban** (ajánlott, GPU elérhető)
